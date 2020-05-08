@@ -1,0 +1,7 @@
+*.rom
+*.o
+*.elf
+*.cfg
+.idea
+cmake-*
+*.dump
