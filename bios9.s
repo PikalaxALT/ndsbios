@@ -250,8 +250,8 @@ SVCTable:
 	.4byte SVC_LZ77UnCompWRAM
 	.4byte SVC_LZ77UnCompVRAM+1
 	.4byte SVC_HuffUnComp+1
-	.4byte SVC_HuffUnCompWRAM+1
-	.4byte SVC_HuffUnCompVRAM+1
+	.4byte SVC_RLUnCompWRAM+1
+	.4byte SVC_RLUnCompVRAM+1
 	.4byte SVC_Diff8UnFilter+1
 	.4byte 0x00000000
 	.4byte SVC_Diff16UnFilter+1
@@ -717,8 +717,8 @@ _FFFF069E:
 	pop {r4, r5, r6, r7, pc}
 	thumb_func_end SVC_LZ77UnCompVRAM
 
-	non_word_aligned_thumb_func_start SVC_HuffUnCompVRAM
-SVC_HuffUnCompVRAM: @ 0xFFFF06A2
+	non_word_aligned_thumb_func_start SVC_RLUnCompVRAM
+SVC_RLUnCompVRAM: @ 0xFFFF06A2
 	push {r0, r1, r2, r3, r4, r5, r6, r7, lr}
 	sub sp, #0xc
 	adds r7, r1, #0
@@ -830,7 +830,7 @@ _FFFF0768: .4byte 0x027F8000
 _FFFF076C: .4byte CRC16Table
 _FFFF0770: .4byte 0x023FFFE0
 _FFFF0774: .4byte 0x027FFFE0
-	thumb_func_end SVC_HuffUnCompVRAM
+	thumb_func_end SVC_RLUnCompVRAM
 
 	arm_func_start FUN_FFFF0778
 FUN_FFFF0778: @ 0xFFFF0778
@@ -1164,8 +1164,8 @@ _FFFF0AF0:
 	bx lr
 	arm_func_end SVC_LZ77UnCompWRAM
 
-	thumb_func_start SVC_HuffUnCompWRAM
-SVC_HuffUnCompWRAM: @ 0xFFFF0AF8
+	thumb_func_start SVC_RLUnCompWRAM
+SVC_RLUnCompWRAM: @ 0xFFFF0AF8
 	push {r7, lr}
 	push {r4, r5, r6, r7}
 	ldm r0!, {r3}
@@ -1204,7 +1204,7 @@ _FFFF0B34:
 	pop {r4, r5, r6, r7}
 	pop {r2, r3}
 	bx r3
-	thumb_func_end SVC_HuffUnCompWRAM
+	thumb_func_end SVC_RLUnCompWRAM
 
 	non_word_aligned_thumb_func_start SVC_Diff8UnFilter
 SVC_Diff8UnFilter: @ 0xFFFF0B3A
