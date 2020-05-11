@@ -408,16 +408,16 @@ _00001164:
 
 	thumb_func_start SVC_GetBootProcs
 SVC_GetBootProcs: @ 0x00001188
-	ldr r2, _00001198 @ =0x00003249
-	ldr r0, _000011F4 @ =0x0000145B
-	ldr r1, _000011F8 @ =0x00001E75
-	ldr r3, _000011FC @ =0x000011A4
-	eors r3, r0
-	eors r0, r1
-	eors r1, r2
+	ldr r2, _00001198 @ =_00003248+1
+	ldr r0, _000011F4 @ =FUN_0000145A+1
+	ldr r1, _000011F8 @ =FUN_00001E74+1
+	ldr r3, _000011FC @ =FUN_000011A4
+	eors r3, r0 @ 0x5FF
+	eors r0, r1 @ 0xA2E
+	eors r1, r2 @ 0x2C3D
 	bx lr
 	.align 2, 0
-_00001198: .4byte 0x00003249
+_00001198: .4byte _00003248+1
 	thumb_func_end SVC_GetBootProcs
 
 	thumb_func_start FUN_0000119C
@@ -460,9 +460,9 @@ _000011E4: .4byte FUN_000027F8+1
 _000011E8: .4byte FUN_000028B4+1
 _000011EC: .4byte FUN_00002F92+1
 _000011F0: .4byte SVC_CpuFastSet
-_000011F4: .4byte 0x0000145B
-_000011F8: .4byte 0x00001E75
-_000011FC: .4byte 0x000011A4
+_000011F4: .4byte FUN_0000145A+1
+_000011F8: .4byte FUN_00001E74+1
+_000011FC: .4byte FUN_000011A4
 _00001200: .4byte 0x04000300
 	arm_func_end SVC_Stop
 
@@ -744,7 +744,7 @@ FUN_000013B6: @ 0x000013B6
 	strh r0, [r1, #0x10]
 	lsrs r0, r5, #0x11
 	strh r0, [r5]
-	ldr r0, _00001604 @ =0x00001E75
+	ldr r0, _00001604 @ =FUN_00001E74+1
 	ldr r1, _000015D0 @ =0x0380FC40
 	str r0, [r1]
 	bl FUN_0000137A
@@ -795,15 +795,22 @@ _00001476:
 	blo _00001486
 	b _00001590
 _00001486:
-	add r3, pc, #0x8
+	adr r3, _00001490
 	ldrb r3, [r3, r1]
 	lsls r3, r3, #1
 	add pc, r3
 	movs r0, r0
-	movs r7, #4
-	strb r6, [r5, r4]
-	strh r4, [r3, #0xa]
-	lsls r0, r1, #2
+	.align 2, 0
+_00001490: @ jump table
+	.byte (_00001498 - _00001490)>>1 @ case 0
+	.byte (_000014DE - _00001490)>>1 @ case 1
+	.byte (_000014EC - _00001490)>>1 @ case 2
+	.byte (_0000153A - _00001490)>>1 @ case 3
+	.byte (_00001548 - _00001490)>>1 @ case 4
+	.byte (_00001592 - _00001490)>>1 @ case 5
+	.byte (_000015A0 - _00001490)>>1 @ case 6
+	.align 1, 0
+_00001498:
 	ldrh r0, [r0, #0xc]
 	cmp r0, #0
 	bne _00001584
@@ -841,20 +848,14 @@ _000014CE:
 _000014DA:
 	strh r6, [r4]
 	b _00001590
-	thumb_func_end FUN_0000145A
-
-	non_word_aligned_thumb_func_start FUN_000014DE
-FUN_000014DE: @ 0x000014DE
+_000014DE: @ 0x000014DE
 	ldr r0, _0000160C @ =0x0380FFC0
 	ldr r0, [r0, #0x38]
 	lsls r0, r0, #0xc
 	bpl _00001590
 	bl FUN_00001EBA
 	b _000014DA
-	thumb_func_end FUN_000014DE
-
-	thumb_func_start FUN_000014EC
-FUN_000014EC: @ 0x000014EC
+_000014EC: @ 0x000014EC
 	ldr r0, [r2, #0x30]
 	adds r2, #0x38
 	ldr r5, _000015C0 @ =0x037F8000
@@ -896,20 +897,14 @@ _00001526:
 _00001536:
 	strh r7, [r4]
 	b _00001590
-	thumb_func_end FUN_000014EC
-
-	non_word_aligned_thumb_func_start FUN_0000153A
-FUN_0000153A: @ 0x0000153A
+_0000153A: @ 0x0000153A
 	ldr r0, _0000160C @ =0x0380FFC0
 	ldr r0, [r0, #0x38]
 	lsls r0, r0, #0xc
 	bpl _00001590
 	bl FUN_00001EBA
 	b _00001536
-	thumb_func_end FUN_0000153A
-
-	thumb_func_start FUN_00001548
-FUN_00001548: @ 0x00001548
+_00001548: @ 0x00001548
 	ldrh r0, [r0, #0x14]
 	cmp r0, #1
 	bne _00001584
@@ -950,20 +945,14 @@ _0000158E:
 	strh r5, [r4]
 _00001590:
 	b _000015A8
-	thumb_func_end FUN_00001548
-
-	non_word_aligned_thumb_func_start FUN_00001592
-FUN_00001592: @ 0x00001592
+_00001592: @ 0x00001592
 	ldr r0, _0000160C @ =0x0380FFC0
 	ldr r0, [r0, #0x38]
 	lsls r0, r0, #0xc
 	bpl _000015A8
 	bl FUN_00001EBA
 	b _0000158E
-	thumb_func_end FUN_00001592
-
-	thumb_func_start FUN_000015A0
-FUN_000015A0: @ 0x000015A0
+_000015A0: @ 0x000015A0
 	bl FUN_0000119C
 	ldr r0, _000015E0 @ =0x0000FFFF
 _000015A6:
@@ -994,13 +983,13 @@ _000015F4: .4byte 0x0380FC38
 _000015F8: .4byte 0x0380FC3C
 _000015FC: .4byte 0x0380FC00
 _00001600: .4byte 0x0380FC30
-_00001604: .4byte 0x00001E75
+_00001604: .4byte FUN_00001E74+1
 _00001608: .4byte 0x023BFE01
 _0000160C: .4byte 0x0380FFC0
 _00001610: .4byte 0x0000FE01
 _00001614: .4byte 0x03807E01
 _00001618: .4byte 0x027BFE01
-	thumb_func_end FUN_000015A0
+	thumb_func_end FUN_0000145A
 
 	thumb_func_start FUN_0000161C
 FUN_0000161C: @ 0x0000161C
@@ -1937,23 +1926,26 @@ FUN_00001C7E: @ 0x00001C7E
 	ldrsh r5, [r1, r3]
 	cmp r5, #6
 	bhs _00001CCC
-	add r3, pc, #0x4
+	adr r3, _00001CA4
 	ldrb r3, [r3, r5]
 	lsls r3, r3, #1
 	add pc, r3
-	lsrs r2, r0, #0x20
-	movs r4, #0x16
-	subs r2, #0x35
+_00001CA4: @ jump table
+	.byte (_00001CAA - _00001CA4 - 2)>>1 @ case 0
+	.byte (_00001CB6 - _00001CA4 - 2)>>1 @ case 1
+	.byte (_00001CD2 - _00001CA4 - 2)>>1 @ case 2
+	.byte (_00001CEE - _00001CA4 - 2)>>1 @ case 3
+	.byte (_00001D10 - _00001CA4 - 2)>>1 @ case 4
+	.byte (_00001D1A - _00001CA4 - 2)>>1 @ case 5
+	.align 1, 0
+_00001CAA:
 	movs r2, #1
 	strh r2, [r1]
 	ldrh r0, [r0, #0xc]
 	cmp r0, #0
 	bne _00001D10
 	b _00001CC8
-	thumb_func_end FUN_00001C7E
-
-	non_word_aligned_thumb_func_start FUN_00001CB6
-FUN_00001CB6: @ 0x00001CB6
+_00001CB6: @ 0x00001CB6
 	movs r3, #2
 	strh r3, [r1]
 	ldr r3, [r0, #4]
@@ -2005,10 +1997,7 @@ _00001D10:
 	strh r0, [r1]
 	bl FUN_00001A88
 	b _00001CCC
-	thumb_func_end FUN_00001CB6
-
-	non_word_aligned_thumb_func_start FUN_00001D1A
-FUN_00001D1A: @ 0x00001D1A
+_00001D1A: @ 0x00001D1A
 	ldr r2, _00001D90 @ =0x0380FFC0
 	ldr r0, [r2, #0x38]
 	movs r1, #1
@@ -2016,7 +2005,7 @@ FUN_00001D1A: @ 0x00001D1A
 	orrs r0, r1
 	str r0, [r2, #0x38]
 	b _00001CCC
-	thumb_func_end FUN_00001D1A
+	thumb_func_end FUN_00001C7E
 
 	thumb_func_start FUN_00001D28
 FUN_00001D28: @ 0x00001D28
@@ -4135,9 +4124,10 @@ _00002CA0:
 	stmdb sp!, {lr}
 	bic ip, sp, #1
 	ldr ip, [ip, #0xc]
-	add lr, pc, #0x4 @ =0x00002CC0
+	adr lr, _00002CC0
 	cmp ip, #0
 	bxne ip
+_00002CC0:
 	ldm sp!, {lr}
 	msr spsr_fsxc, lr
 	pop {ip, lr}
@@ -4161,12 +4151,9 @@ _00002CD0:
 	ldr r0, _00002EB8 @ =FUN_00002EC4
 	str r0, [r4, #-4]
 	ldr r0, _00002EBC @ =FUN_000013B6+1
-	add lr, pc, #0x0 @ =FUN_00002D20
+	adr lr, _00002D20
 	bx r0
-	arm_func_end FUN_00002C8C
-
-	arm_func_start FUN_00002D20
-FUN_00002D20: @ 0x00002D20
+_00002D20: @ 0x00002D20
 	bl FUN_00002D60
 	mov ip, #160, #14
 	ldr lr, [ip, #-0x1cc]
@@ -4180,7 +4167,7 @@ _00002D38:
 _00002D44:
 	beq _00002D44
 	bx ip
-	arm_func_end FUN_00002D20
+	arm_func_end FUN_00002C8C
 
 	arm_func_start SVC_SoftReset
 SVC_SoftReset: @ 0x00002D4C
@@ -4217,12 +4204,10 @@ FUN_00002D78: @ 0x00002D78
 	msr cpsr_fsxc, r0
 	ldr sp, _00002E2C @ =0x0380FF00
 	mov r4, #64, #12
-	add r0, pc, #0x1 @ =0x00002DB9
+	adr r0, _00002DB8+1
 	bx r0
-	arm_func_end FUN_00002D78
-
-	thumb_func_start FUN_00002DB8
-FUN_00002DB8: @ 0x00002DB8
+	.thumb
+_00002DB8:
 	movs r0, #0
 	ldr r1, _00002EC0 @ =0xFFFFFE00
 _00002DBC:
@@ -4230,21 +4215,22 @@ _00002DBC:
 	adds r1, #4
 	blt _00002DBC
 	bx lr
-	thumb_func_end FUN_00002DB8
+	arm_func_end FUN_00002D78
 
 	arm_func_start FUN_00002DC4
 FUN_00002DC4: @ 0x00002DC4
 	push {r0, r1, r2, r3, ip, lr}
 	mov r0, #64, #12
-	add lr, pc, #0x0 @ =0x00002DD4
+	adr lr, _00002DD4
 	ldr pc, [r0, #-4]
+_00002DD4:
 	pop {r0, r1, r2, r3, ip, lr}
 	subs pc, lr, #4
 _00002DDC:
 	push {fp, ip, lr}
 	ldrh ip, [lr, #-2]
 	and ip, ip, #0xff
-	add fp, pc, #0x48 @ =0x00002E38
+	adr fp, _00002E38
 	ldr ip, [fp, ip, lsl #2]
 	mrs fp, spsr
 	stmdb sp!, {fp}
@@ -4252,12 +4238,9 @@ _00002DDC:
 	orr fp, fp, #0x1f
 	msr cpsr_fsxc, fp
 	push {r2, lr}
-	add lr, pc, #0x0 @ =FUN_00002E10
+	adr lr, _00002E10
 	bx ip
-	arm_func_end FUN_00002DC4
-
-	arm_func_start FUN_00002E10
-FUN_00002E10: @ 0x00002E10
+_00002E10: @ 0x00002E10
 	pop {r2, lr}
 	mov ip, #0xd3
 	msr cpsr_fsxc, ip
@@ -4306,7 +4289,7 @@ _00002E38:
 _00002EB8: .4byte FUN_00002EC4
 _00002EBC: .4byte FUN_000013B6+1
 _00002EC0: .4byte 0xFFFFFE00
-	arm_func_end FUN_00002E10
+	arm_func_end FUN_00002DC4
 
 	arm_func_start FUN_00002EC4
 FUN_00002EC4: @ 0x00002EC4
@@ -4531,11 +4514,9 @@ _000030B6:
 
 	thumb_func_start FUN_000030BC
 FUN_000030BC: @ 0x000030BC
-	add r3, pc, #0x4 @ =FUN_000030C4
+	adr r3, FUN_000030C4
 	mov ip, r4
 	bx r3
-	thumb_func_end FUN_000030BC
-
 	arm_func_start FUN_000030C4
 FUN_000030C4: @ 0x000030C4
 	cmp ip, #0
@@ -4546,14 +4527,13 @@ FUN_000030C4: @ 0x000030C4
 	tstne ip, #224, #12
 _000030DC:
 	bx lr
+	thumb_func_end FUN_000030BC
 	arm_func_end FUN_000030C4
 
 	thumb_func_start FUN_000030E0
 FUN_000030E0: @ 0x000030E0
 	mov r3, pc
 	bx r3
-	thumb_func_end FUN_000030E0
-
 	arm_func_start SVC_CpuFastSet
 SVC_CpuFastSet: @ 0x000030E4
 	push {r4, r5, r6, r7, r8, sb, sl, lr}
@@ -4596,6 +4576,7 @@ _00003158:
 _00003168:
 	pop {r4, r5, r6, r7, r8, sb, sl, lr}
 	bx lr
+	thumb_func_end FUN_000030E0
 	arm_func_end SVC_CpuFastSet
 
 	arm_func_start SVC_BitUnPack
