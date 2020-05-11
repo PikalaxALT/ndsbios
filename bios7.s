@@ -4160,12 +4160,10 @@ _00002D20: @ 0x00002D20
 	sub ip, ip, #128, #28
 	ldrh r0, [ip, #0x2c]
 	cmp r0, #0
-_00002D38:
-	bne _00002D38
+	bne . @ trap
 	ldr ip, [ip, #0x24]
 	cmp ip, #0
-_00002D44:
-	beq _00002D44
+	beq . @ trap
 	bx ip
 	arm_func_end FUN_00002C8C
 
