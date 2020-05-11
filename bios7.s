@@ -43,7 +43,14 @@ FUN_0000001C: @ 0x0000001C
 _00000020:
 	b _00002CD0
 _00000024:
-	.byte 0x05, 0x9B, 0x9B, 0x87, 0x5C, 0x60, 0xE8, 0x4D, 0x5A, 0xB1, 0x17, 0x8F
+	.word 0x879B9B05
+_00000028:
+	.byte 0x5C
+_00000029:
+	.byte 0x60
+_0000002A:
+	.byte 0xE8, 0x4D, 0x5A, 0xB1, 0x17, 0x8F
+_00000030:
 	.byte 0x99, 0xD5, 0x20, 0x5F, 0x57, 0x44, 0xF5, 0xB9, 0x6E, 0x19, 0xA4, 0xD9, 0x9E, 0x6A, 0x5A, 0x94
 	.byte 0xD8, 0xAE, 0xF1, 0xEB, 0x41, 0x75, 0xE2, 0x3A, 0x93, 0x82, 0xD0, 0x32, 0x33, 0xEE, 0x31, 0xD5
 	.byte 0xCC, 0x57, 0x61, 0x9A, 0x37, 0x06, 0xA2, 0x1B, 0x79, 0x39, 0x72, 0xF5, 0x55, 0xAE, 0xF6, 0xBE
@@ -304,10 +311,24 @@ _00000024:
 	.byte 0xA7, 0x5E, 0x71, 0xF0, 0x6B, 0x01, 0x2D, 0x7B, 0x64, 0xF0, 0x33, 0x53, 0x0A, 0x39, 0x88, 0xF3
 	.byte 0x6B, 0x3A, 0xA6, 0x6B, 0x35, 0xD2, 0x2F, 0x43, 0xCD, 0x02, 0xFD, 0xB5, 0xE9, 0xBC, 0x5B, 0xAA
 	.byte 0xD8, 0xA4, 0x19, 0x7E, 0x0E, 0x5D, 0x94, 0x81, 0x9E, 0x6F, 0x77, 0xAD, 0xD6, 0x0E, 0x74, 0x93
-	.byte 0x96, 0xE7, 0xC4, 0x18, 0x5F, 0xAD, 0xF5, 0x19, 0x1E, 0x27, 0x2D, 0x36, 0x4B, 0x63, 0x72, 0x78
-	.byte 0x93, 0x9C, 0xB1, 0xB4, 0xC6, 0xC9, 0xD8, 0xE1, 0x4E, 0x6D, 0x4D, 0x64, 0x4F, 0x6E, 0x6C, 0x79
-	.byte 0x65, 0x6E, 0x50, 0x6E, 0x67, 0x4F, 0x46, 0x46, 0x65, 0x6E, 0x63, 0x72, 0x79, 0x4F, 0x62, 0x6A
-	.byte 0x54, 0x4E, 0x44, 0x49, 0x4F, 0x52, 0x00, 0x00
+	.byte 0x96, 0xE7, 0xC4, 0x18, 0x5F, 0xAD, 0xF5, 0x19
+_00001078:
+	.byte 0x1E, 0x27, 0x2D, 0x36, 0x4B, 0x63, 0x72, 0x78
+	.byte 0x93, 0x9C, 0xB1, 0xB4, 0xC6, 0xC9, 0xD8, 0xE1
+_00001088:
+	.ascii "NmMdOnly"
+_00001090:
+	.ascii "enPngOFF"
+_00001098:
+	.ascii "encryObj"
+_000010A0:
+	.2byte 0x4E54
+_000010A2:
+	.2byte 0x4944
+_000010A4:
+	.2byte 0x524F
+
+	.align 2
 _000010A8:
 	lsr r0, r0, #1
 	b _000010C8
@@ -326,49 +347,49 @@ _000010C8:
 	movne lr, #4
 	bx lr
 _000010D8:
-	ldr ip, _000011CC @ =0x00001F51
+	ldr ip, _000011CC @ =FUN_00001F50+1
 	b _00001164
 _000010E0:
 	mov r3, #8
-	ldr ip, _000011D0 @ =0x0000275F
+	ldr ip, _000011D0 @ =FUN_0000275E+1
 	b _00001164
 _000010EC:
 	mov r3, #0xc
-	ldr ip, _000011D0 @ =0x0000275F
+	ldr ip, _000011D0 @ =FUN_0000275E+1
 	b _00001164
 _000010F8:
-	ldr ip, _000011D4 @ =0x000027D5
+	ldr ip, _000011D4 @ =FUN_000027D4+1
 	b _00001164
 _00001100:
-	ldr ip, _000011D8 @ =0x00002037
+	ldr ip, _000011D8 @ =FUN_00002036+1
 	b _00001164
 _00001108:
-	ldr ip, _000011DC @ =0x00001FFB
+	ldr ip, _000011DC @ =FUN_00001FFA+1
 	b _00001164
 _00001110:
 	mov r2, r1
 	add r1, r1, #4
-	ldr ip, _000011DC @ =0x00001FFB
+	ldr ip, _000011DC @ =FUN_00001FFA+1
 	b _00001164
 _00001120:
 	add r2, r1, #4
 	add r1, r1, #8
-	ldr ip, _000011DC @ =0x00001FFB
+	ldr ip, _000011DC @ =FUN_00001FFA+1
 	b _00001164
 _00001130:
 	mov r2, r1
 	add r1, r1, #4
-	ldr ip, _000011E0 @ =0x000020BD
+	ldr ip, _000011E0 @ =FUN_000020BC+1
 	b _00001164
 _00001140:
-	ldr ip, _000011E4 @ =0x000027F9
+	ldr ip, _000011E4 @ =FUN_000027F8+1
 	b _00001164
 _00001148:
 	mov r0, #8
-	ldr ip, _000011E8 @ =0x000028B5
+	ldr ip, _000011E8 @ =FUN_000028B4+1
 	b _00001164
 _00001154:
-	ldr ip, _000011EC @ =0x00002F93
+	ldr ip, _000011EC @ =FUN_00002F92+1
 	b _00001164
 _0000115C:
 	ldr ip, _000011F0 @ =SVC_CpuFastSet
@@ -429,15 +450,15 @@ SVC_CustomHalt:
 	mov r0, r0
 	bx lr
 	.align 2, 0
-_000011CC: .4byte 0x00001F51
-_000011D0: .4byte 0x0000275F
-_000011D4: .4byte 0x000027D5
-_000011D8: .4byte 0x00002037
-_000011DC: .4byte 0x00001FFB
-_000011E0: .4byte 0x000020BD
-_000011E4: .4byte 0x000027F9
-_000011E8: .4byte 0x000028B5
-_000011EC: .4byte 0x00002F93
+_000011CC: .4byte FUN_00001F50+1
+_000011D0: .4byte FUN_0000275E+1
+_000011D4: .4byte FUN_000027D4+1
+_000011D8: .4byte FUN_00002036+1
+_000011DC: .4byte FUN_00001FFA+1
+_000011E0: .4byte FUN_000020BC+1
+_000011E4: .4byte FUN_000027F8+1
+_000011E8: .4byte FUN_000028B4+1
+_000011EC: .4byte FUN_00002F92+1
 _000011F0: .4byte SVC_CpuFastSet
 _000011F4: .4byte 0x0000145B
 _000011F8: .4byte 0x00001E75
@@ -579,10 +600,10 @@ _000012EC:
 	b _0000133C
 _000012F2:
 	bl FUN_0000195A
-	ldr r0, _000015CC @ =0x00001C7F
+	ldr r0, _000015CC @ =FUN_00001C7E+1
 	ldr r1, _000015D0 @ =0x0380FC40
 	str r0, [r1]
-	ldr r0, _000015D4 @ =0x00001DC5
+	ldr r0, _000015D4 @ =FUN_00001DC4+1
 	str r0, [r1, #4]
 	bl FUN_0000161C
 	adds r2, r4, #0
@@ -593,7 +614,7 @@ _000012F2:
 	bl FUN_00001ED2
 	bl FUN_00001660
 	ldr r0, [sp, #8]
-	ldr r1, _000015D8 @ =0x00001090
+	ldr r1, _000015D8 @ =_00001090
 	ldr r0, [r0, #0x20]
 	ldr r2, [r1]
 	cmp r0, r2
@@ -623,7 +644,7 @@ _0000133C:
 	strh r0, [r5, #0xa]
 _00001352:
 	bl FUN_00003314
-	ldr r0, _000015E4 @ =0x00001205
+	ldr r0, _000015E4 @ =FUN_00001204+1
 	ldr r1, _000015E8 @ =0x04000300
 	str r0, [r1, #8]
 	movs r0, #0
@@ -959,13 +980,13 @@ _000015BC: .4byte 0x0000CF56
 _000015C0: .4byte 0x037F8000
 _000015C4: .4byte 0x027FFE00
 _000015C8: .4byte 0x003BFE01
-_000015CC: .4byte 0x00001C7F
+_000015CC: .4byte FUN_00001C7E+1
 _000015D0: .4byte 0x0380FC40
-_000015D4: .4byte 0x00001DC5
-_000015D8: .4byte 0x00001090
+_000015D4: .4byte FUN_00001DC4+1
+_000015D8: .4byte _00001090
 _000015DC: .4byte 0x00406000
 _000015E0: .4byte 0x0000FFFF
-_000015E4: .4byte 0x00001205
+_000015E4: .4byte FUN_00001204+1
 _000015E8: .4byte 0x04000300
 _000015EC: .4byte 0x01000844
 _000015F0: .4byte 0x083F1FFF
@@ -1821,7 +1842,7 @@ FUN_00001BCE: @ 0x00001BCE
 	movs r3, #3
 	str r3, [r4, #0x10]
 	stm r4!, {r0, r1}
-	ldr r3, _00001D98 @ =0x000018DD
+	ldr r3, _00001D98 @ =FUN_000018DC+1
 	subs r4, #8
 	str r3, [r4, #0x20]
 	adds r3, r4, #0
@@ -1851,7 +1872,7 @@ FUN_00001C0A: @ 0x00001C0A
 	movs r3, #3
 	str r3, [r4, #0x10]
 	stm r4!, {r0, r1}
-	ldr r3, _00001D9C @ =0x00001AAB
+	ldr r3, _00001D9C @ =FUN_00001AAA+1
 	subs r4, #8
 	str r3, [r4, #0x20]
 	adds r3, r4, #0
@@ -1871,7 +1892,7 @@ FUN_00001C0A: @ 0x00001C0A
 FUN_00001C42: @ 0x00001C42
 	push {r3, r4, r5, r6, r7, lr}
 	ldr r4, _00001D80 @ =0x037F8000
-	ldr r7, _00001DA0 @ =0x00001078
+	ldr r7, _00001DA0 @ =_00001078
 	ldr r6, [r4, #0x38]
 	movs r5, #1
 	lsrs r6, r6, #0x1c
@@ -1889,7 +1910,7 @@ FUN_00001C42: @ 0x00001C42
 	strh r4, [r5, #4]
 	subs r3, #0x10
 	stm r3!, {r0, r1}
-	ldr r4, _00001DA4 @ =0x00001B2B
+	ldr r4, _00001DA4 @ =FUN_00001B2A+1
 	subs r3, #8
 	str r4, [r3, #0x20]
 	bl FUN_00001BAE
@@ -1968,7 +1989,7 @@ _00001CEE:
 	ldrh r0, [r2, #0x28]
 	cmp r0, #0
 	beq _00001D10
-	ldr r3, _00001DAC @ =0x00001090
+	ldr r3, _00001DAC @ =_00001090
 	ldr r0, [r2, #0x20]
 	ldr r4, [r3]
 	cmp r0, r4
@@ -2006,12 +2027,12 @@ FUN_00001D28: @ 0x00001D28
 	subs r2, #0x40
 	ldrh r2, [r2, #0x12]
 	lsls r2, r2, #0x15
-	ldr r3, _00001DB0 @ =0x0000002A
+	ldr r3, _00001DB0 @ =_0000002A
 	lsrs r2, r2, #0x1d
 	ldrb r2, [r3, r2]
 	lsls r0, r0, #8
 	orrs r1, r2
-	ldr r2, _00001DB4 @ =0x00000029
+	ldr r2, _00001DB4 @ =_00000029
 	ldrb r2, [r2]
 	lsls r2, r2, #8
 	orrs r2, r1
@@ -2025,10 +2046,10 @@ _00001D4C:
 	ldr r2, _00001D84 @ =0x04000180
 	adds r2, #0x20
 	strh r1, [r2, #0x18]
-	ldr r1, _00001DB8 @ =0x00000024
+	ldr r1, _00001DB8 @ =_00000024
 	ldr r1, [r1]
 	str r1, [r0, #0x34]
-	ldr r1, _00001DBC @ =0x00000028
+	ldr r1, _00001DBC @ =_00000028
 	ldrb r1, [r1]
 	strh r1, [r2, #0x1a]
 	ldr r1, _00001DC0 @ =0x2000E000
@@ -2046,16 +2067,16 @@ _00001D88: .4byte 0x083F1FFF
 _00001D8C: .4byte 0x0FFFF000
 _00001D90: .4byte 0x0380FFC0
 _00001D94: .4byte 0xAFBF1FFF
-_00001D98: .4byte 0x000018DD
-_00001D9C: .4byte 0x00001AAB
-_00001DA0: .4byte 0x00001078
-_00001DA4: .4byte 0x00001B2B
+_00001D98: .4byte FUN_000018DC+1
+_00001D9C: .4byte FUN_00001AAA+1
+_00001DA0: .4byte _00001078
+_00001DA4: .4byte FUN_00001B2A+1
 _00001DA8: .4byte 0x04000300
-_00001DAC: .4byte 0x00001090
-_00001DB0: .4byte 0x0000002A
-_00001DB4: .4byte 0x00000029
-_00001DB8: .4byte 0x00000024
-_00001DBC: .4byte 0x00000028
+_00001DAC: .4byte _00001090
+_00001DB0: .4byte _0000002A
+_00001DB4: .4byte _00000029
+_00001DB8: .4byte _00000024
+_00001DBC: .4byte _00000028
 _00001DC0: .4byte 0x2000E000
 	thumb_func_end FUN_00001D28
 
@@ -2144,10 +2165,10 @@ _00001E38:
 	ldr r1, _00001F90 @ =0x0380FC40
 	lsrs r0, r0, #0x14
 	bne _00001E6E
-	ldr r0, _00001F94 @ =0x00001C7F
+	ldr r0, _00001F94 @ =FUN_00001C7E+1
 	b _00001E70
 _00001E6E:
-	ldr r0, _00001F98 @ =0x00001DC5
+	ldr r0, _00001F98 @ =FUN_00001DC4+1
 _00001E70:
 	str r0, [r1]
 	b _00001E12
@@ -2251,7 +2272,7 @@ FUN_00001EE8: @ 0x00001EE8
 	eors r0, r1
 	ldrh r1, [r4, #6]
 	eors r0, r1
-	ldr r1, _00001FA8 @ =0x00001EE9
+	ldr r1, _00001FA8 @ =FUN_00001EE8+1
 	eors r0, r1
 	adds r1, r2, #0
 	adds r1, #8
@@ -2284,7 +2305,7 @@ FUN_00001F50: @ 0x00001F50
 	ldr r4, _00001F7C @ =0x037F8000
 	bl FUN_00001F3A
 	bl FUN_00001EE8
-	ldr r1, _00001FB0 @ =0x00001088
+	ldr r1, _00001FB0 @ =_00001088
 	ldr r0, [r4, #0x44]
 	ldr r2, [r1]
 	cmp r0, r2
@@ -2306,14 +2327,14 @@ _00001F84: .4byte 0x0380FC00
 _00001F88: .4byte 0x04000100
 _00001F8C: .4byte 0x00080040
 _00001F90: .4byte 0x0380FC40
-_00001F94: .4byte 0x00001C7F
-_00001F98: .4byte 0x00001DC5
+_00001F94: .4byte FUN_00001C7E+1
+_00001F98: .4byte FUN_00001DC4+1
 _00001F9C: .4byte 0x04000300
 _00001FA0: .4byte 0x0380FFC0
 _00001FA4: .4byte 0x037FA10E
-_00001FA8: .4byte 0x00001EE9
+_00001FA8: .4byte FUN_00001EE8+1
 _00001FAC: .4byte 0x027FFE0C
-_00001FB0: .4byte 0x00001088
+_00001FB0: .4byte _00001088
 	thumb_func_end FUN_00001F50
 
 	thumb_func_start FUN_00001FB4
@@ -3312,7 +3333,7 @@ _0000269A:
 
 	non_word_aligned_thumb_func_start FUN_000026A6
 FUN_000026A6: @ 0x000026A6
-	ldr r3, _00002980 @ =0x000010A4
+	ldr r3, _00002980 @ =_000010A4
 	ldr r2, _0000297C @ =0xFFFF0000
 	ldrh r3, [r3]
 	bics r2, r0
@@ -3361,13 +3382,13 @@ FUN_000026CA: @ 0x000026CA
 	movs r2, #1
 	orrs r0, r2
 	strh r0, [r1, #8]
-	ldr r0, _00002988 @ =0x000010A0
+	ldr r0, _00002988 @ =_000010A0
 	ldrh r0, [r0]
 	lsls r0, r0, #0x10
 	lsrs r1, r1, #0x12
 	orrs r0, r1
 	bl FUN_00002678
-	ldr r0, _0000298C @ =0x000010A2
+	ldr r0, _0000298C @ =_000010A2
 	ldr r1, _0000297C @ =0xFFFF0000
 	ldrh r0, [r0]
 	mvns r0, r0
@@ -3413,7 +3434,7 @@ FUN_0000275E: @ 0x0000275E
 	adds r5, r3, #0
 	adds r1, r6, #0
 	ldr r2, _00002994 @ =0x00001048
-	ldr r0, _00002990 @ =0x00000030
+	ldr r0, _00002990 @ =_00000030
 	bl FUN_00003354
 	ldr r0, [r7]
 	str r0, [r4]
@@ -3528,7 +3549,7 @@ _0000283C:
 	adds r1, r4, #0
 	ldr r0, [sp, #8]
 	bl FUN_00003344
-	ldr r2, _000029A0 @ =0x00001098
+	ldr r2, _000029A0 @ =_00001098
 	ldr r1, [r4]
 	ldr r3, [r2]
 	ldr r0, _000029A4 @ =0xE7FFDEFF
@@ -3677,15 +3698,15 @@ _00002970: .4byte 0x023FFFE0
 _00002974: .4byte 0x027FFFE0
 _00002978: .4byte 0x04000100
 _0000297C: .4byte 0xFFFF0000
-_00002980: .4byte 0x000010A4
+_00002980: .4byte _000010A4
 _00002984: .4byte 0x027FF800
-_00002988: .4byte 0x000010A0
-_0000298C: .4byte 0x000010A2
-_00002990: .4byte 0x00000030
+_00002988: .4byte _000010A0
+_0000298C: .4byte _000010A2
+_00002990: .4byte _00000030
 _00002994: .4byte 0x00001048
 _00002998: .4byte 0x027FFE00
 _0000299C: .4byte 0x037F90C4
-_000029A0: .4byte 0x00001098
+_000029A0: .4byte _00001098
 _000029A4: .4byte 0xE7FFDEFF
 _000029A8:
 	movs r1, #0x20
@@ -4314,7 +4335,6 @@ SVC_WaitByLoop: @ 0x00002F08
 	subs r0, #1
 	bgt SVC_WaitByLoop
 	bx lr
-	.align 2, 0
 	thumb_func_end SVC_WaitByLoop
 
 	arm_func_start SVC_VBlankIntrWait
@@ -4380,9 +4400,12 @@ _00002F90:
 
 	non_word_aligned_thumb_func_start FUN_00002F92
 FUN_00002F92: @ 0x00002F92
+	@ Copy 4 bytes at a time from r0 to r1
+	@ Copy size is r2
+	@ If reading past FUN_00001204, jump into SoundBias (???) (bug: thumb flag set)
 	adds r2, r2, r1
 _00002F94:
-	ldr r3, _00002FAC @ =0x00001205
+	ldr r3, _00002FAC @ =FUN_00001204+1
 	cmp r0, r3
 	bge _00002F80
 	ldm r0!, {r3}
@@ -4393,7 +4416,7 @@ _00002F94:
 	.align 2, 0
 _00002FA4: .4byte 0x0380FC40
 _00002FA8: .4byte 0x04000504
-_00002FAC: .4byte 0x00001205
+_00002FAC: .4byte FUN_00001204+1
 	thumb_func_end FUN_00002F92
 
 	arm_func_start SVC_Div
@@ -4511,7 +4534,6 @@ FUN_000030BC: @ 0x000030BC
 	add r3, pc, #0x4 @ =FUN_000030C4
 	mov ip, r4
 	bx r3
-	.align 2, 0
 	thumb_func_end FUN_000030BC
 
 	arm_func_start FUN_000030C4
@@ -4744,217 +4766,159 @@ FUN_00003306: @ 0x00003306
 	thumb_func_start FUN_00003308
 FUN_00003308: @ 0x00003308
 	bx r5
-	.align 2, 0
 	thumb_func_end FUN_00003308
 
 	thumb_func_start FUN_0000330C
 FUN_0000330C: @ 0x0000330C
 	bx pc
 	nop
-	thumb_func_end FUN_0000330C
-
-	arm_func_start FUN_00003310
-FUN_00003310: @ 0x00003310
+	.arm
 	b _000010D8
-	arm_func_end FUN_00003310
+	thumb_func_end FUN_0000330C
 
 	thumb_func_start FUN_00003314
 FUN_00003314: @ 0x00003314
 	bx pc
 	nop
-	thumb_func_end FUN_00003314
-
-	arm_func_start FUN_00003318
-FUN_00003318: @ 0x00003318
+	.arm
 	b _00001140
-	arm_func_end FUN_00003318
+	thumb_func_end FUN_00003314
 
 	thumb_func_start FUN_0000331C
 FUN_0000331C: @ 0x0000331C
 	bx pc
 	nop
-	thumb_func_end FUN_0000331C
-
-	arm_func_start FUN_00003320
-FUN_00003320: @ 0x00003320
+	.arm
 	b SVC_CpuFastSet
-	arm_func_end FUN_00003320
+	thumb_func_end FUN_0000331C
 
 	thumb_func_start FUN_00003324
 FUN_00003324: @ 0x00003324
 	bx pc
 	nop
-	thumb_func_end FUN_00003324
-
-	arm_func_start FUN_00003328
-FUN_00003328: @ 0x00003328
+	.arm
 	b SVC_IntrWait
-	arm_func_end FUN_00003328
+	thumb_func_end FUN_00003324
 
 	thumb_func_start FUN_0000332C
 FUN_0000332C: @ 0x0000332C
 	bx pc
 	nop
-	thumb_func_end FUN_0000332C
-
-	arm_func_start FUN_00003330
-FUN_00003330: @ 0x00003330
+	.arm
 	b _00001110
-	arm_func_end FUN_00003330
+	thumb_func_end FUN_0000332C
 
 	thumb_func_start FUN_00003334
 FUN_00003334: @ 0x00003334
 	bx pc
 	nop
-	thumb_func_end FUN_00003334
-
-	arm_func_start FUN_00003338
-FUN_00003338: @ 0x00003338
+	.arm
 	b _00001108
-	arm_func_end FUN_00003338
+	thumb_func_end FUN_00003334
 
 	thumb_func_start FUN_0000333C
 FUN_0000333C: @ 0x0000333C
 	bx pc
 	nop
-	thumb_func_end FUN_0000333C
-
-	arm_func_start FUN_00003340
-FUN_00003340: @ 0x00003340
+	.arm
 	b _000010E0
-	arm_func_end FUN_00003340
+	thumb_func_end FUN_0000333C
 
 	thumb_func_start FUN_00003344
 FUN_00003344: @ 0x00003344
 	bx pc
 	nop
-	thumb_func_end FUN_00003344
-
-	arm_func_start FUN_00003348
-FUN_00003348: @ 0x00003348
+	.arm
 	b _00001130
-	arm_func_end FUN_00003348
+	thumb_func_end FUN_00003344
 
 	thumb_func_start FUN_0000334C
 FUN_0000334C: @ 0x0000334C
 	bx pc
 	nop
-	thumb_func_end FUN_0000334C
-
-	arm_func_start FUN_00003350
-FUN_00003350: @ 0x00003350
+	.arm
 	b _000010EC
-	arm_func_end FUN_00003350
+	thumb_func_end FUN_0000334C
 
 	thumb_func_start FUN_00003354
 FUN_00003354: @ 0x00003354
 	bx pc
 	nop
-	thumb_func_end FUN_00003354
-
-	arm_func_start FUN_00003358
-FUN_00003358: @ 0x00003358
+	.arm
 	b _00001154
-	arm_func_end FUN_00003358
+	thumb_func_end FUN_00003354
 
 	thumb_func_start FUN_0000335C
 FUN_0000335C: @ 0x0000335C
 	bx pc
 	nop
-	thumb_func_end FUN_0000335C
-
-	arm_func_start FUN_00003360
-FUN_00003360: @ 0x00003360
+	.arm
 	b _000010A8
-	arm_func_end FUN_00003360
+	thumb_func_end FUN_0000335C
 
 	thumb_func_start FUN_00003364
 FUN_00003364: @ 0x00003364
 	bx pc
 	nop
-	thumb_func_end FUN_00003364
-
-	arm_func_start FUN_00003368
-FUN_00003368: @ 0x00003368
+	.arm
 	b _000010B0
-	arm_func_end FUN_00003368
+	thumb_func_end FUN_00003364
 
 	thumb_func_start FUN_0000336C
 FUN_0000336C: @ 0x0000336C
 	bx pc
 	nop
-	thumb_func_end FUN_0000336C
-
-	arm_func_start FUN_00003370
-FUN_00003370: @ 0x00003370
+	.arm
 	b _000010F8
-	arm_func_end FUN_00003370
+	thumb_func_end FUN_0000336C
 
 	thumb_func_start FUN_00003374
 FUN_00003374: @ 0x00003374
 	bx pc
 	nop
-	thumb_func_end FUN_00003374
-
-	arm_func_start FUN_00003378
-FUN_00003378: @ 0x00003378
+	.arm
 	b _00001120
-	arm_func_end FUN_00003378
+	thumb_func_end FUN_00003374
 
 	thumb_func_start FUN_0000337C
 FUN_0000337C: @ 0x0000337C
 	bx pc
 	nop
-	thumb_func_end FUN_0000337C
-
-	arm_func_start FUN_00003380
-FUN_00003380: @ 0x00003380
+	.arm
 	b _00001100
-	arm_func_end FUN_00003380
+	thumb_func_end FUN_0000337C
 
 	thumb_func_start FUN_00003384
 FUN_00003384: @ 0x00003384
 	bx pc
 	nop
-	thumb_func_end FUN_00003384
-
-	arm_func_start FUN_00003388
-FUN_00003388: @ 0x00003388
+	.arm
 	b _0000115C
-	arm_func_end FUN_00003388
+	thumb_func_end FUN_00003384
 
 	thumb_func_start FUN_0000338C
 FUN_0000338C: @ 0x0000338C
 	bx pc
 	nop
-	thumb_func_end FUN_0000338C
-
-	arm_func_start FUN_00003390
-FUN_00003390: @ 0x00003390
+	.arm
 	b _00001148
-	arm_func_end FUN_00003390
+	thumb_func_end FUN_0000338C
 
 	thumb_func_start FUN_00003394
 FUN_00003394: @ 0x00003394
 	bx pc
 	nop
-	thumb_func_end FUN_00003394
-
-	arm_func_start FUN_00003398
-FUN_00003398: @ 0x00003398
+	.arm
 	b _000010B8
-	arm_func_end FUN_00003398
+	thumb_func_end FUN_00003394
 
 	thumb_func_start FUN_0000339C
 FUN_0000339C: @ 0x0000339C
 	bx pc
 	nop
-	thumb_func_end FUN_0000339C
-
-	arm_func_start FUN_000033A0
-FUN_000033A0: @ 0x000033A0
+	.arm
 	b _000010C0
-	arm_func_end FUN_000033A0
+	thumb_func_end FUN_0000339C
 
 	thumb_func_start FUN_000033A4
 FUN_000033A4: @ 0x000033A4
