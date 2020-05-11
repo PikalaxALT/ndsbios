@@ -537,7 +537,7 @@ _00001266:
 	ldr r0, [sp, #8]
 	str r4, [r0, #0x58]
 	bl FUN_000025F0
-	bl FUN_0000330C
+	bl __VENEER_000010D8
 	bl FUN_0000121A
 	cmp r0, #0
 	bne _000012A8
@@ -643,7 +643,7 @@ _0000133C:
 	bl SVC_GetCRC16
 	strh r0, [r5, #0xa]
 _00001352:
-	bl FUN_00003314
+	bl __VENEER_00001140
 	ldr r0, _000015E4 @ =FUN_00001204+1
 	ldr r1, _000015E8 @ =0x04000300
 	str r0, [r1, #8]
@@ -652,7 +652,7 @@ _00001352:
 	add r0, sp, #4
 	ldr r2, _000015EC @ =0x01000844
 	ldr r1, _000015C0 @ =0x037F8000
-	bl FUN_0000331C
+	bl __VENEER_SVC_CpuFastSet
 	ldrh r0, [r5, #0x2c]
 	cmp r0, #0
 	beq _00001374
@@ -1841,7 +1841,7 @@ FUN_00001BCE: @ 0x00001BCE
 	ldr r2, [r4, #0xc]
 	ldr r4, [r4, #0x20]
 	ldr r3, _00001D70 @ =0x0380FC10
-	bl FUN_00003306
+	bl __call_via_r4
 	pop {r4, r5, r7}
 	pop {r3}
 	bx r3
@@ -1871,7 +1871,7 @@ FUN_00001C0A: @ 0x00001C0A
 	ldr r2, [r4, #0xc]
 	ldr r4, [r4, #0x20]
 	ldr r3, _00001D70 @ =0x0380FC10
-	bl FUN_00003306
+	bl __call_via_r4
 	pop {r4, r5, r7}
 	pop {r3}
 	bx r3
@@ -2188,7 +2188,7 @@ FUN_00001E74: @ 0x00001E74
 	ldr r4, [r3, #0x20]
 	ldr r3, _00001F84 @ =0x0380FC00
 	adds r3, #0x10
-	bl FUN_00003306
+	bl __call_via_r4
 _00001EA6:
 	pop {r4}
 	pop {r3}
@@ -2223,7 +2223,7 @@ FUN_00001ED2: @ 0x00001ED2
 	lsls r1, r1, #0x13
 	push {r7, lr}
 	movs r0, #0
-	bl FUN_00003324
+	bl __VENEER_SVC_IntrWait
 	bl FUN_00001EBA
 	pop {r7}
 	pop {r3}
@@ -2238,7 +2238,7 @@ FUN_00001EE8: @ 0x00001EE8
 	adds r5, #0x7c
 	adds r1, r4, #0
 	adds r0, r5, #0
-	bl FUN_0000332C
+	bl __VENEER_00001110
 	ldr r1, _00001FA4 @ =0x037FA10E
 	ldr r0, [r4, #4]
 	ldr r2, _00001F7C @ =0x037F8000
@@ -2267,7 +2267,7 @@ FUN_00001EE8: @ 0x00001EE8
 	adds r1, #8
 	str r0, [r4, #0x34]
 	adds r0, r5, #0
-	bl FUN_00003334
+	bl __VENEER_00001108
 	pop {r3, r4, r5}
 	pop {r3}
 	bx r3
@@ -2281,7 +2281,7 @@ FUN_00001F3A: @ 0x00001F3A
 	adds r0, r2, #0
 	adds r0, #0x30
 	ldr r1, _00001FAC @ =0x027FFE0C
-	bl FUN_0000333C
+	bl __VENEER_000010E0
 	pop {r7}
 	pop {r3}
 	bx r3
@@ -2697,11 +2697,11 @@ _00002252:
 	movs r2, #2
 	adds r1, #0x18
 	mov r0, sp
-	bl FUN_0000331C
+	bl __VENEER_SVC_CpuFastSet
 	movs r2, #2
 	adds r1, r5, #0
 	add r0, sp, #8
-	bl FUN_0000331C
+	bl __VENEER_SVC_CpuFastSet
 	pop {r0, r1, r2, r3, r4, r5, r6}
 	pop {r3}
 	bx r3
@@ -2836,7 +2836,7 @@ FUN_00002330: @ 0x00002330
 	bl FUN_000033A4
 	adds r1, r5, #0
 	ldr r0, _00002588 @ =0x037F90C4
-	bl FUN_00003344
+	bl __VENEER_00001130
 _00002350:
 	ldrh r1, [r4, #0xa]
 	adds r0, r1, #1
@@ -3008,7 +3008,7 @@ FUN_00002462: @ 0x00002462
 	adds r1, r5, #0
 	adds r1, #0x38
 	ldr r0, _00002588 @ =0x037F90C4
-	bl FUN_0000334C
+	bl __VENEER_000010EC
 	ldrh r1, [r4, #0x14]
 	movs r3, #4
 	adds r2, r3, #0
@@ -3186,7 +3186,7 @@ FUN_000025C2: @ 0x000025C2
 	mov r0, sp
 	ldr r2, _0000295C @ =0x01000F80
 	ldr r1, _00002960 @ =0x0380C000
-	bl FUN_0000331C
+	bl __VENEER_SVC_CpuFastSet
 	add sp, #4
 	pop {r3}
 	bx r3
@@ -3201,7 +3201,7 @@ FUN_000025D8: @ 0x000025D8
 	mov r0, sp
 	ldr r1, _00002964 @ =0x037F8000
 	adds r2, #0x80
-	bl FUN_0000331C
+	bl __VENEER_SVC_CpuFastSet
 	add sp, #4
 	pop {r3}
 	bx r3
@@ -3215,7 +3215,7 @@ FUN_000025F0: @ 0x000025F0
 	str r0, [sp]
 	mov r0, sp
 	lsls r1, r2, #0xb
-	bl FUN_0000331C
+	bl __VENEER_SVC_CpuFastSet
 	add sp, #4
 	pop {r3}
 	bx r3
@@ -3424,19 +3424,19 @@ FUN_0000275E: @ 0x0000275E
 	adds r1, r6, #0
 	ldr r2, _00002994 @ =0x00001048
 	ldr r0, _00002990 @ =_00000030
-	bl FUN_00003354
+	bl __VENEER_00001154
 	ldr r0, [r7]
 	str r0, [r4]
 	ldr r0, [r7]
-	bl FUN_0000335C
+	bl __VENEER_000010A8
 	str r0, [r4, #4]
 	ldr r0, [r7]
-	bl FUN_00003364
+	bl __VENEER_000010B0
 	adds r2, r5, #0
 	adds r1, r4, #0
 	str r0, [r4, #8]
 	adds r0, r6, #0
-	bl FUN_0000336C
+	bl __VENEER_000010F8
 	ldr r1, _00002984 @ =0x027FF800
 	ldr r7, _00002964 @ =0x037F8000
 	adds r1, #0x30
@@ -3459,7 +3459,7 @@ _000027AA:
 	adds r1, #0x20
 _000027B6:
 	adds r0, r6, #0
-	bl FUN_00003344
+	bl __VENEER_00001130
 	cmp r5, #8
 	bls _000027C4
 	movs r0, #1
@@ -3468,7 +3468,7 @@ _000027C4:
 	adds r2, r5, #0
 	adds r1, r4, #0
 	adds r0, r6, #0
-	bl FUN_0000336C
+	bl __VENEER_000010F8
 	pop {r3, r4, r5, r6, r7}
 	pop {r3}
 	bx r3
@@ -3480,14 +3480,14 @@ FUN_000027D4: @ 0x000027D4
 	adds r5, r1, #0
 	adds r4, r0, #0
 	adds r6, r2, #0
-	bl FUN_00003374
+	bl __VENEER_00001120
 	adds r1, r5, #0
 	adds r0, r4, #0
-	bl FUN_0000332C
+	bl __VENEER_00001110
 	adds r2, r6, #0
 	adds r1, r5, #0
 	adds r0, r4, #0
-	bl FUN_0000337C
+	bl __VENEER_00001110_2
 	pop {r4, r5, r6}
 	pop {r3}
 	bx r3
@@ -3524,12 +3524,12 @@ _00002818:
 	asrs r2, r0, #2
 	ldr r0, [sp, #4]
 	adds r1, r4, #0
-	bl FUN_00003384
+	bl __VENEER_0000115C
 	adds r1, r4, #0
 	ldr r0, [sp, #8]
-	bl FUN_00003344
+	bl __VENEER_00001130
 _0000283C:
-	bl FUN_0000338C
+	bl __VENEER_00001148
 	ldr r0, _00002964 @ =0x037F8000
 	adds r0, #0x40
 	ldrh r0, [r0]
@@ -3537,7 +3537,7 @@ _0000283C:
 	beq _000028AE
 	adds r1, r4, #0
 	ldr r0, [sp, #8]
-	bl FUN_00003344
+	bl __VENEER_00001130
 	ldr r2, _000029A0 @ =_00001098
 	ldr r1, [r4]
 	ldr r3, [r2]
@@ -3556,7 +3556,7 @@ _0000286E:
 	adds r7, #8
 	adds r1, r7, #0
 	ldr r0, [sp, #8]
-	bl FUN_00003344
+	bl __VENEER_00001130
 _00002878:
 	subs r6, #8
 	cmp r6, #0
@@ -3574,7 +3574,7 @@ _00002880:
 	adds r2, r0, #0
 	mov r0, sp
 	adds r1, r4, #0
-	bl FUN_0000331C
+	bl __VENEER_SVC_CpuFastSet
 	movs r0, #1
 	strh r0, [r7, #0xe]
 _0000289E:
@@ -3584,7 +3584,7 @@ _0000289E:
 	asrs r2, r0, #2
 	adds r0, r4, #0
 	ldr r1, [sp, #4]
-	bl FUN_00003384
+	bl __VENEER_0000115C
 _000028AE:
 	pop {r1, r2, r3, r4, r5, r6, r7}
 	pop {r3}
@@ -3600,15 +3600,15 @@ FUN_000028B4: @ 0x000028B4
 	adds r4, r5, #0
 	subs r4, #0x30
 	ldr r0, [r4, #4]
-	bl FUN_00003394
+	bl __VENEER_000010B8
 	str r0, [r4, #4]
 	ldr r0, [r4, #8]
-	bl FUN_0000339C
+	bl __VENEER_000010C0
 	adds r2, r6, #0
 	adds r1, r4, #0
 	str r0, [r4, #8]
 	adds r0, r5, #0
-	bl FUN_0000336C
+	bl __VENEER_000010F8
 	pop {r4, r5, r6}
 	pop {r3}
 	bx r3
@@ -3624,7 +3624,7 @@ SVC_HuffUnComp: @ 0x000028E0
 	movs r7, #0
 	movs r6, #0
 	ldm r2, {r0, r1, r2}
-	bl FUN_00003304
+	bl __call_via_r3
 	lsls r2, r0, #0x1c
 	lsrs r2, r2, #0x1c
 	lsls r1, r2, #0x1d
@@ -3647,7 +3647,7 @@ _00002914:
 	adds r0, #4
 	str r0, [sp, #0x1c]
 	ldr r1, [r1, #8]
-	bl FUN_00003300
+	bl __call_via_r1
 	ldr r1, [sp, #0x24]
 	strb r0, [r1]
 	lsls r0, r0, #1
@@ -3661,7 +3661,7 @@ _00002930:
 	adds r0, #1
 	str r0, [sp, #0x1c]
 	ldr r1, [r1, #8]
-	bl FUN_00003300
+	bl __call_via_r1
 	ldr r1, [sp, #0x24]
 	strb r0, [r1, r4]
 	adds r4, #1
@@ -3703,7 +3703,7 @@ _000029A8:
 	ldr r1, [sp, #0x28]
 	ldr r1, [r1, #0x10]
 	ldr r0, [sp, #0x1c]
-	bl FUN_00003300
+	bl __call_via_r1
 	ldr r1, [sp, #0x1c]
 	adds r1, #4
 	str r1, [sp, #0x1c]
@@ -3758,7 +3758,7 @@ _00002A0E:
 	cmp r1, #0
 	beq _00002A20
 	ldr r0, [sp, #0x1c]
-	bl FUN_00003300
+	bl __call_via_r1
 	cmp r0, #0
 	blt _00002A22
 _00002A20:
@@ -3781,7 +3781,7 @@ SVC_LZ77UnCompVRAM: @ 0x00002A2A
 	movs r4, #0
 	ldr r3, [r1]
 	adds r1, r6, #0
-	bl FUN_00003304
+	bl __call_via_r3
 	asrs r1, r0, #8
 	str r1, [sp, #8]
 	str r1, [sp, #4]
@@ -3797,7 +3797,7 @@ _00002A52:
 	adds r0, r7, #1
 	adds r7, r0, #0
 	ldr r1, [r1, #8]
-	bl FUN_00003300
+	bl __call_via_r1
 	str r0, [sp, #0x18]
 	movs r0, #8
 	str r0, [sp, #0xc]
@@ -3810,7 +3810,7 @@ _00002A66:
 	adds r0, r7, #1
 	adds r7, r0, #0
 	ldr r1, [r1, #8]
-	bl FUN_00003300
+	bl __call_via_r1
 	lsls r0, r5
 	ldr r1, [sp, #4]
 	orrs r4, r0
@@ -3828,7 +3828,7 @@ _00002A90:
 	adds r0, r7, #1
 	adds r7, r0, #0
 	ldr r1, [r1, #8]
-	bl FUN_00003300
+	bl __call_via_r1
 	lsrs r3, r0, #4
 	lsls r0, r0, #0x1c
 	lsrs r1, r0, #0x14
@@ -3839,7 +3839,7 @@ _00002A90:
 	adds r0, r7, #1
 	adds r7, r0, #0
 	ldr r1, [r1, #8]
-	bl FUN_00003300
+	bl __call_via_r1
 	ldr r1, [sp, #0x14]
 	movs r2, #8
 	orrs r0, r1
@@ -3902,7 +3902,7 @@ _00002B1A:
 	cmp r1, #0
 	beq _00002B2C
 	adds r0, r7, #1
-	bl FUN_00003300
+	bl __call_via_r1
 	cmp r0, #0
 	blt _00002B2E
 _00002B2C:
@@ -3925,7 +3925,7 @@ SVC_RLUnCompVRAM: @ 0x00002B36
 	movs r4, #0
 	ldr r3, [r1]
 	adds r1, r7, #0
-	bl FUN_00003304
+	bl __call_via_r3
 	asrs r1, r0, #8
 	str r1, [sp, #4]
 	str r1, [sp]
@@ -3941,7 +3941,7 @@ _00002B5E:
 	adds r0, r6, #1
 	adds r6, r0, #0
 	ldr r1, [r1, #8]
-	bl FUN_00003300
+	bl __call_via_r1
 	lsls r1, r0, #0x19
 	lsrs r1, r1, #0x19
 	lsls r0, r0, #0x18
@@ -3958,7 +3958,7 @@ _00002B80:
 	adds r0, r6, #1
 	adds r6, r0, #0
 	ldr r1, [r1, #8]
-	bl FUN_00003300
+	bl __call_via_r1
 	lsls r0, r5
 	orrs r4, r0
 	movs r0, #8
@@ -3983,7 +3983,7 @@ _00002BA6:
 	adds r0, r6, #1
 	adds r6, r0, #0
 	ldr r1, [r1, #8]
-	bl FUN_00003300
+	bl __call_via_r1
 	movs r2, #8
 	b _00002BD0
 _00002BC0:
@@ -4010,7 +4010,7 @@ _00002BDE:
 	cmp r1, #0
 	beq _00002BF0
 	adds r0, r6, #1
-	bl FUN_00003300
+	bl __call_via_r1
 	cmp r0, #0
 	blt _00002BF2
 _00002BF0:
@@ -4228,7 +4228,7 @@ _00002DDC:
 	push {fp, ip, lr}
 	ldrh ip, [lr, #-2]
 	and ip, ip, #0xff
-	adr fp, _00002E38
+	adr fp, SVCTable
 	ldr ip, [fp, ip, lsl #2]
 	mrs fp, spsr
 	stmdb sp!, {fp}
@@ -4250,39 +4250,39 @@ _00002E10: @ 0x00002E10
 _00002E2C: .4byte 0x0380FF00
 _00002E30: .4byte 0x0380FFB0
 _00002E34: .4byte 0x0380FFDC
-_00002E38:
-	.4byte SVC_SoftReset
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte SVC_WaitByLoop+1
-	.4byte SVC_IntrWait
-	.4byte SVC_VBlankIntrWait
-	.4byte SVC_Halt
-	.4byte SVC_Stop
-	.4byte SVC_SoundBias+1
-	.4byte SVC_Div
-	.4byte 0x00000000
-	.4byte SVC_CpuSet+1
-	.4byte SVC_CpuFastSet
-	.4byte SVC_Sqrt
-	.4byte SVC_GetCRC16+1
-	.4byte SVC_IsDebugger+1
-	.4byte SVC_BitUnPack
-	.4byte SVC_LZ77UnCompWRAM
-	.4byte SVC_LZ77UnCompVRAM+1
-	.4byte SVC_HuffUnComp+1
-	.4byte SVC_RLUnCompWRAM+1
-	.4byte SVC_RLUnCompVRAM+1
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte SVC_GetSineTable+1
-	.4byte SVC_GetPitchTable+1
-	.4byte SVC_GetVolumeTable+1
-	.4byte SVC_GetBootProcs+1
-	.4byte 0x00000000
-	.4byte SVC_CustomHalt
+SVCTable:
+	.4byte SVC_SoftReset                @ 00
+	.4byte 0                            @ 01
+	.4byte 0                            @ 02
+	.4byte SVC_WaitByLoop+1             @ 03
+	.4byte SVC_IntrWait                 @ 04
+	.4byte SVC_VBlankIntrWait           @ 05
+	.4byte SVC_Halt                     @ 06
+	.4byte SVC_Stop                     @ 07
+	.4byte SVC_SoundBias+1              @ 08
+	.4byte SVC_Div                      @ 09
+	.4byte 0                            @ 0A
+	.4byte SVC_CpuSet+1                 @ 0B
+	.4byte SVC_CpuFastSet               @ 0C
+	.4byte SVC_Sqrt                     @ 0D
+	.4byte SVC_GetCRC16+1               @ 0E
+	.4byte SVC_IsDebugger+1             @ 0F
+	.4byte SVC_BitUnPack                @ 10
+	.4byte SVC_LZ77UnCompWRAM           @ 11
+	.4byte SVC_LZ77UnCompVRAM+1         @ 12
+	.4byte SVC_HuffUnComp+1             @ 13
+	.4byte SVC_RLUnCompWRAM+1           @ 14
+	.4byte SVC_RLUnCompVRAM+1           @ 15
+	.4byte 0                            @ 16
+	.4byte 0                            @ 17
+	.4byte 0                            @ 18
+	.4byte 0                            @ 19
+	.4byte SVC_GetSineTable+1           @ 1A
+	.4byte SVC_GetPitchTable+1          @ 1B
+	.4byte SVC_GetVolumeTable+1         @ 1C
+	.4byte SVC_GetBootProcs+1           @ 1D
+	.4byte 0                            @ 1E
+	.4byte SVC_CustomHalt               @ 1F
 
 _00002EB8: .4byte FUN_00002EC4
 _00002EBC: .4byte FUN_000013B6+1
@@ -4466,7 +4466,7 @@ SVC_CpuSet: @ 0x0000306C
 	push {r4, r5, lr}
 	lsls r4, r2, #0xb
 	lsrs r4, r4, #9
-	bl FUN_000030BC
+	bl Thumb_BoundsCheck
 	beq _000030B6
 	movs r5, #0
 	lsrs r3, r2, #0x1b
@@ -4510,13 +4510,13 @@ _000030B6:
 	bx r3
 	thumb_func_end SVC_CpuSet
 
-	thumb_func_start FUN_000030BC
-FUN_000030BC: @ 0x000030BC
-	adr r3, FUN_000030C4
+	thumb_func_start Thumb_BoundsCheck
+Thumb_BoundsCheck: @ 0x000030BC
+	adr r3, Arm_BoundsCheck
 	mov ip, r4
 	bx r3
-	arm_func_start FUN_000030C4
-FUN_000030C4: @ 0x000030C4
+	arm_func_start Arm_BoundsCheck
+Arm_BoundsCheck: @ 0x000030C4
 	cmp ip, #0
 	beq _000030DC
 	bic ip, ip, #0xfe000000
@@ -4525,11 +4525,11 @@ FUN_000030C4: @ 0x000030C4
 	tstne ip, #224, #12
 _000030DC:
 	bx lr
-	thumb_func_end FUN_000030BC
-	arm_func_end FUN_000030C4
+	thumb_func_end Thumb_BoundsCheck
+	arm_func_end Arm_BoundsCheck
 
-	thumb_func_start FUN_000030E0
-FUN_000030E0: @ 0x000030E0
+	thumb_func_start Thumb_SVC_CpuFastSet
+Thumb_SVC_CpuFastSet: @ 0x000030E0
 	mov r3, pc
 	bx r3
 	arm_func_start SVC_CpuFastSet
@@ -4537,7 +4537,7 @@ SVC_CpuFastSet: @ 0x000030E4
 	push {r4, r5, r6, r7, r8, sb, sl, lr}
 	lsl sl, r2, #0xb
 	lsrs ip, sl, #9
-	bl FUN_000030C4
+	bl Arm_BoundsCheck
 	beq _00003168
 	add lr, r1, sl, lsr #9
 	lsr sl, sl, #0xe
@@ -4574,7 +4574,7 @@ _00003158:
 _00003168:
 	pop {r4, r5, r6, r7, r8, sb, sl, lr}
 	bx lr
-	thumb_func_end FUN_000030E0
+	thumb_func_end Thumb_SVC_CpuFastSet
 	arm_func_end SVC_CpuFastSet
 
 	arm_func_start SVC_BitUnPack
@@ -4583,7 +4583,7 @@ SVC_BitUnPack: @ 0x00003170
 	sub sp, sp, #4
 	ldrh r7, [r2]
 	movs ip, r7
-	bl FUN_000030C4
+	bl Arm_BoundsCheck
 	beq _00003214
 	ldrb r6, [r2, #2]
 	rsb sl, r6, #8
@@ -4636,7 +4636,7 @@ SVC_LZ77UnCompWRAM: @ 0x00003220
 	ldr r5, [r0], #4
 	lsr r2, r5, #8
 	movs ip, r2
-	bl FUN_000030C4
+	bl Arm_BoundsCheck
 	beq _000032B0
 _00003238:
 	cmp r2, #0
@@ -4684,7 +4684,7 @@ SVC_RLUnCompWRAM: @ 0x000032B8
 	ldm r0!, {r3}
 	lsrs r7, r3, #8
 	adds r4, r7, #0
-	bl FUN_000030BC
+	bl Thumb_BoundsCheck
 	beq _000032FA
 _000032C6:
 	cmp r7, #0
@@ -4722,182 +4722,182 @@ _000032FA:
 	bx r0
 	thumb_func_end SVC_RLUnCompWRAM
 
-	thumb_func_start FUN_00003300
-FUN_00003300: @ 0x00003300
+	thumb_func_start __call_via_r1
+__call_via_r1: @ 0x00003300
 	bx r1
-	thumb_func_end FUN_00003300
+	thumb_func_end __call_via_r1
 
-	non_word_aligned_thumb_func_start FUN_00003302
-FUN_00003302: @ 0x00003302
+	non_word_aligned_thumb_func_start __call_via_r2
+__call_via_r2: @ 0x00003302
 	bx r2
-	thumb_func_end FUN_00003302
+	thumb_func_end __call_via_r2
 
-	thumb_func_start FUN_00003304
-FUN_00003304: @ 0x00003304
+	thumb_func_start __call_via_r3
+__call_via_r3: @ 0x00003304
 	bx r3
-	thumb_func_end FUN_00003304
+	thumb_func_end __call_via_r3
 
-	non_word_aligned_thumb_func_start FUN_00003306
-FUN_00003306: @ 0x00003306
+	non_word_aligned_thumb_func_start __call_via_r4
+__call_via_r4: @ 0x00003306
 	bx r4
-	thumb_func_end FUN_00003306
+	thumb_func_end __call_via_r4
 
-	thumb_func_start FUN_00003308
-FUN_00003308: @ 0x00003308
+	thumb_func_start __call_via_r5
+__call_via_r5: @ 0x00003308
 	bx r5
-	thumb_func_end FUN_00003308
+	thumb_func_end __call_via_r5
 
-	thumb_func_start FUN_0000330C
-FUN_0000330C: @ 0x0000330C
+	thumb_func_start __VENEER_000010D8
+__VENEER_000010D8: @ 0x0000330C
 	bx pc
 	nop
 	.arm
 	b _000010D8
-	thumb_func_end FUN_0000330C
+	thumb_func_end __VENEER_000010D8
 
-	thumb_func_start FUN_00003314
-FUN_00003314: @ 0x00003314
+	thumb_func_start __VENEER_00001140
+__VENEER_00001140: @ 0x00003314
 	bx pc
 	nop
 	.arm
 	b _00001140
-	thumb_func_end FUN_00003314
+	thumb_func_end __VENEER_00001140
 
-	thumb_func_start FUN_0000331C
-FUN_0000331C: @ 0x0000331C
+	thumb_func_start __VENEER_SVC_CpuFastSet
+__VENEER_SVC_CpuFastSet: @ 0x0000331C
 	bx pc
 	nop
 	.arm
 	b SVC_CpuFastSet
-	thumb_func_end FUN_0000331C
+	thumb_func_end __VENEER_SVC_CpuFastSet
 
-	thumb_func_start FUN_00003324
-FUN_00003324: @ 0x00003324
+	thumb_func_start __VENEER_SVC_IntrWait
+__VENEER_SVC_IntrWait: @ 0x00003324
 	bx pc
 	nop
 	.arm
 	b SVC_IntrWait
-	thumb_func_end FUN_00003324
+	thumb_func_end __VENEER_SVC_IntrWait
 
-	thumb_func_start FUN_0000332C
-FUN_0000332C: @ 0x0000332C
+	thumb_func_start __VENEER_00001110
+__VENEER_00001110: @ 0x0000332C
 	bx pc
 	nop
 	.arm
 	b _00001110
-	thumb_func_end FUN_0000332C
+	thumb_func_end __VENEER_00001110
 
-	thumb_func_start FUN_00003334
-FUN_00003334: @ 0x00003334
+	thumb_func_start __VENEER_00001108
+__VENEER_00001108: @ 0x00003334
 	bx pc
 	nop
 	.arm
 	b _00001108
-	thumb_func_end FUN_00003334
+	thumb_func_end __VENEER_00001108
 
-	thumb_func_start FUN_0000333C
-FUN_0000333C: @ 0x0000333C
+	thumb_func_start __VENEER_000010E0
+__VENEER_000010E0: @ 0x0000333C
 	bx pc
 	nop
 	.arm
 	b _000010E0
-	thumb_func_end FUN_0000333C
+	thumb_func_end __VENEER_000010E0
 
-	thumb_func_start FUN_00003344
-FUN_00003344: @ 0x00003344
+	thumb_func_start __VENEER_00001130
+__VENEER_00001130: @ 0x00003344
 	bx pc
 	nop
 	.arm
 	b _00001130
-	thumb_func_end FUN_00003344
+	thumb_func_end __VENEER_00001130
 
-	thumb_func_start FUN_0000334C
-FUN_0000334C: @ 0x0000334C
+	thumb_func_start __VENEER_000010EC
+__VENEER_000010EC: @ 0x0000334C
 	bx pc
 	nop
 	.arm
 	b _000010EC
-	thumb_func_end FUN_0000334C
+	thumb_func_end __VENEER_000010EC
 
-	thumb_func_start FUN_00003354
-FUN_00003354: @ 0x00003354
+	thumb_func_start __VENEER_00001154
+__VENEER_00001154: @ 0x00003354
 	bx pc
 	nop
 	.arm
 	b _00001154
-	thumb_func_end FUN_00003354
+	thumb_func_end __VENEER_00001154
 
-	thumb_func_start FUN_0000335C
-FUN_0000335C: @ 0x0000335C
+	thumb_func_start __VENEER_000010A8
+__VENEER_000010A8: @ 0x0000335C
 	bx pc
 	nop
 	.arm
 	b _000010A8
-	thumb_func_end FUN_0000335C
+	thumb_func_end __VENEER_000010A8
 
-	thumb_func_start FUN_00003364
-FUN_00003364: @ 0x00003364
+	thumb_func_start __VENEER_000010B0
+__VENEER_000010B0: @ 0x00003364
 	bx pc
 	nop
 	.arm
 	b _000010B0
-	thumb_func_end FUN_00003364
+	thumb_func_end __VENEER_000010B0
 
-	thumb_func_start FUN_0000336C
-FUN_0000336C: @ 0x0000336C
+	thumb_func_start __VENEER_000010F8
+__VENEER_000010F8: @ 0x0000336C
 	bx pc
 	nop
 	.arm
 	b _000010F8
-	thumb_func_end FUN_0000336C
+	thumb_func_end __VENEER_000010F8
 
-	thumb_func_start FUN_00003374
-FUN_00003374: @ 0x00003374
+	thumb_func_start __VENEER_00001120
+__VENEER_00001120: @ 0x00003374
 	bx pc
 	nop
 	.arm
 	b _00001120
-	thumb_func_end FUN_00003374
+	thumb_func_end __VENEER_00001120
 
-	thumb_func_start FUN_0000337C
-FUN_0000337C: @ 0x0000337C
+	thumb_func_start __VENEER_00001110_2
+__VENEER_00001110_2: @ 0x0000337C
 	bx pc
 	nop
 	.arm
 	b _00001100
-	thumb_func_end FUN_0000337C
+	thumb_func_end __VENEER_00001110_2
 
-	thumb_func_start FUN_00003384
-FUN_00003384: @ 0x00003384
+	thumb_func_start __VENEER_0000115C
+__VENEER_0000115C: @ 0x00003384
 	bx pc
 	nop
 	.arm
 	b _0000115C
-	thumb_func_end FUN_00003384
+	thumb_func_end __VENEER_0000115C
 
-	thumb_func_start FUN_0000338C
-FUN_0000338C: @ 0x0000338C
+	thumb_func_start __VENEER_00001148
+__VENEER_00001148: @ 0x0000338C
 	bx pc
 	nop
 	.arm
 	b _00001148
-	thumb_func_end FUN_0000338C
+	thumb_func_end __VENEER_00001148
 
-	thumb_func_start FUN_00003394
-FUN_00003394: @ 0x00003394
+	thumb_func_start __VENEER_000010B8
+__VENEER_000010B8: @ 0x00003394
 	bx pc
 	nop
 	.arm
 	b _000010B8
-	thumb_func_end FUN_00003394
+	thumb_func_end __VENEER_000010B8
 
-	thumb_func_start FUN_0000339C
-FUN_0000339C: @ 0x0000339C
+	thumb_func_start __VENEER_000010C0
+__VENEER_000010C0: @ 0x0000339C
 	bx pc
 	nop
 	.arm
 	b _000010C0
-	thumb_func_end FUN_0000339C
+	thumb_func_end __VENEER_000010C0
 
 	thumb_func_start FUN_000033A4
 FUN_000033A4: @ 0x000033A4
@@ -4939,8 +4939,8 @@ UNK_000033E0:
 	.4byte FUN_00002388+1
 	.4byte FUN_000022C6+1
 	.4byte FUN_00002330+1
-	.4byte 0x00000000
-	.4byte 0x00000000
+	.4byte 0
+	.4byte 0
 
 DebuggerIdent: @ 0x000033F4
 	.2byte 0x56A9

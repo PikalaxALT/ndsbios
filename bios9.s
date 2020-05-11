@@ -230,38 +230,38 @@ _FFFF02F0: .4byte 0x00803FA0
 _FFFF02F4: .4byte 0x00803FC0
 _FFFF02F8: .4byte 0x027FFD9C
 SVCTable:
-	.4byte SVC_SoftReset
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte SVC_WaitByLoop+1
-	.4byte SVC_IntrWait
-	.4byte SVC_VBlankIntrWait
-	.4byte SVC_Halt
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte SVC_Div
-	.4byte 0x00000000
-	.4byte SVC_CpuSet+1
-	.4byte SVC_CpuFastSet
-	.4byte SVC_Sqrt
-	.4byte SVC_GetCRC16+1
-	.4byte SVC_IsDebugger+1
-	.4byte SVC_BitUnPack
-	.4byte SVC_LZ77UnCompWRAM
-	.4byte SVC_LZ77UnCompVRAM+1
-	.4byte SVC_HuffUnComp+1
-	.4byte SVC_RLUnCompWRAM+1
-	.4byte SVC_RLUnCompVRAM+1
-	.4byte SVC_Diff8UnFilter+1
-	.4byte 0x00000000
-	.4byte SVC_Diff16UnFilter+1
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte 0x00000000
-	.4byte SVC_CustomPost+1
+	.4byte SVC_SoftReset                @ 00
+	.4byte 0                            @ 01
+	.4byte 0                            @ 02
+	.4byte SVC_WaitByLoop+1             @ 03
+	.4byte SVC_IntrWait                 @ 04
+	.4byte SVC_VBlankIntrWait           @ 05
+	.4byte SVC_Halt                     @ 06
+	.4byte 0                            @ 07
+	.4byte 0                            @ 08
+	.4byte SVC_Div                      @ 09
+	.4byte 0                            @ 0A
+	.4byte SVC_CpuSet+1                 @ 0B
+	.4byte SVC_CpuFastSet               @ 0C
+	.4byte SVC_Sqrt                     @ 0D
+	.4byte SVC_GetCRC16+1               @ 0E
+	.4byte SVC_IsDebugger+1             @ 0F
+	.4byte SVC_BitUnPack                @ 10
+	.4byte SVC_LZ77UnCompWRAM           @ 11
+	.4byte SVC_LZ77UnCompVRAM+1         @ 12
+	.4byte SVC_HuffUnComp+1             @ 13
+	.4byte SVC_RLUnCompWRAM+1           @ 14
+	.4byte SVC_RLUnCompVRAM+1           @ 15
+	.4byte SVC_Diff8UnFilter+1          @ 16
+	.4byte 0                            @ 17
+	.4byte SVC_Diff16UnFilter+1         @ 18
+	.4byte 0                            @ 19
+	.4byte 0                            @ 1A
+	.4byte 0                            @ 1B
+	.4byte 0                            @ 1C
+	.4byte 0                            @ 1D
+	.4byte 0                            @ 1E
+	.4byte SVC_CustomPost+1             @ 1F
 
 _FFFF037C: .4byte 0x04000204
 _FFFF0380: .4byte 0x027FFFFE
