@@ -878,8 +878,6 @@ SVC_WaitByLoop: @ 0xFFFF07CC
 SVC_VBlankIntrWait: @ 0xFFFF07D4
 	mov r0, #1
 	mov r1, #1
-	arm_func_end SVC_VBlankIntrWait
-
 	arm_func_start SVC_IntrWait
 SVC_IntrWait: @ 0xFFFF07DC
 	push {r4, lr}
@@ -893,6 +891,7 @@ _FFFF07E8:
 	pop {r4, lr}
 	bx lr
 	arm_func_end SVC_IntrWait
+	arm_func_end SVC_VBlankIntrWait
 
 	arm_func_start FUN_FFFF0800
 FUN_FFFF0800: @ 0xFFFF0800
