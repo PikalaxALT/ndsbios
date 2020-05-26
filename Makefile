@@ -8,7 +8,7 @@ AS = $(CROSS)as
 LD = $(CROSS)ld
 OBJCOPY = $(CROSS)objcopy
 
-SHASUM = shasum -c
+SHASUM = sha1sum -c
 
 .SECONDARY:
 .PHONY: all bios9 bios7 compare clean
