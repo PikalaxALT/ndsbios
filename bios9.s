@@ -1,4 +1,6 @@
 	.include "macros.inc"
+	.set HW_BIOS_EXCP_STACK_MAIN_END, 0x027FFD9C
+
 	.section .text
 	.syntax unified
 
@@ -52,7 +54,7 @@ _FFFF00C0:
 	mrs sp, apsr
 	orr sp, sp, #0xc0
 	msr cpsr_fsxc, sp
-	ldr sp, _FFFF02F8 @ =0x027FFD9C
+	ldr sp, _FFFF02F8 @ =HW_BIOS_EXCP_STACK_MAIN_END
 	add sp, sp, #1
 _FFFF00D4:
 	push {r12, lr}
@@ -70,6 +72,7 @@ _FFFF00D4:
 	msr spsr_fsxc, lr
 	pop {r12, lr}
 	subs pc, lr, #4
+
 _FFFF0110:
 	cmp lr, #0
 	moveq lr, #4
@@ -79,7 +82,7 @@ _FFFF0110:
 	mrseq r12, apsr
 	orreq r12, r12, #0xc0
 	msreq cpsr_fsxc, r12
-	ldreq sp, _FFFF02F8 @ =0x027FFD9C
+	ldreq sp, _FFFF02F8 @ =HW_BIOS_EXCP_STACK_MAIN_END
 	beq _FFFF00D4
 	mov r4, #64, #12
 	mov r0, #0
@@ -228,7 +231,7 @@ SVC_CustomPost: @ 0xFFFF02E4
 _FFFF02EC: .4byte 0x00803EC0
 _FFFF02F0: .4byte 0x00803FA0
 _FFFF02F4: .4byte 0x00803FC0
-_FFFF02F8: .4byte 0x027FFD9C
+_FFFF02F8: .4byte HW_BIOS_EXCP_STACK_MAIN_END
 SVCTable:
 	.4byte SVC_SoftReset                @ 00
 	.4byte 0                            @ 01

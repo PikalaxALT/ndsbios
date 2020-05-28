@@ -50,7 +50,7 @@ _00000029:
 	.byte 0x60
 _0000002A:
 	.byte 0xE8, 0x4D, 0x5A, 0xB1, 0x17, 0x8F
-_00000030:
+EncryptionKeys:
 	.byte 0x99, 0xD5, 0x20, 0x5F, 0x57, 0x44, 0xF5, 0xB9, 0x6E, 0x19, 0xA4, 0xD9, 0x9E, 0x6A, 0x5A, 0x94
 	.byte 0xD8, 0xAE, 0xF1, 0xEB, 0x41, 0x75, 0xE2, 0x3A, 0x93, 0x82, 0xD0, 0x32, 0x33, 0xEE, 0x31, 0xD5
 	.byte 0xCC, 0x57, 0x61, 0x9A, 0x37, 0x06, 0xA2, 0x1B, 0x79, 0x39, 0x72, 0xF5, 0x55, 0xAE, 0xF6, 0xBE
@@ -329,10 +329,10 @@ _000010A4:
 	.2byte 0x524F
 
 	.align 2
-_000010A8:
+BiosCall_Div2_1:
 	lsr r0, r0, #1
 	b _000010C8
-_000010B0:
+BiosCall_Mul2_1:
 	lsl r0, r0, #1
 	b _000010C8
 _000010B8:
@@ -351,35 +351,41 @@ _000010D8:
 	b _00001164
 _000010E0:
 	mov r3, #8
-	ldr ip, _000011D0 @ =FUN_0000275E+1
+	ldr ip, _000011D0 @ =InitKeycode+1
 	b _00001164
-_000010EC:
+BiosCall_InitKeycode:
 	mov r3, #0xc
-	ldr ip, _000011D0 @ =FUN_0000275E+1
+	ldr ip, _000011D0 @ =InitKeycode+1
 	b _00001164
-_000010F8:
-	ldr ip, _000011D4 @ =FUN_000027D4+1
+BiosCall_ApplyKeycode:
+	ldr ip, _000011D4 @ =ApplyKeycode+1
 	b _00001164
 _00001100:
 	ldr ip, _000011D8 @ =FUN_00002036+1
 	b _00001164
-_00001108:
-	ldr ip, _000011DC @ =FUN_00001FFA+1
+BiosCall_Encrypt_64bit_ExpandedArgs:
+	ldr ip, _000011DC @ =Encrypt_64bit+1
 	b _00001164
-_00001110:
+BiosCall_Encrypt_64bit:
+	@ r0: key table
+	@ r1: ptr
 	mov r2, r1
 	add r1, r1, #4
-	ldr ip, _000011DC @ =FUN_00001FFA+1
+	ldr ip, _000011DC @ =Encrypt_64bit+1
 	b _00001164
-_00001120:
+BiosCall_Encrypt_64bit_Plus4:
+	@ r0: key table
+	@ r1: ptr-4
 	add r2, r1, #4
 	add r1, r1, #8
-	ldr ip, _000011DC @ =FUN_00001FFA+1
+	ldr ip, _000011DC @ =Encrypt_64bit+1
 	b _00001164
-_00001130:
+BiosCall_Decrypt_64bit:
+	@ r0: key table
+	@ r1: ptr
 	mov r2, r1
 	add r1, r1, #4
-	ldr ip, _000011E0 @ =FUN_000020BC+1
+	ldr ip, _000011E0 @ =Decrypt_64bit+1
 	b _00001164
 _00001140:
 	ldr ip, _000011E4 @ =FUN_000027F8+1
@@ -388,7 +394,7 @@ _00001148:
 	mov r0, #8
 	ldr ip, _000011E8 @ =FUN_000028B4+1
 	b _00001164
-_00001154:
+BiosCall_CopyData:
 	ldr ip, _000011EC @ =FUN_00002F92+1
 	b _00001164
 _0000115C:
@@ -451,11 +457,11 @@ SVC_CustomHalt:
 	bx lr
 	.align 2, 0
 _000011CC: .4byte FUN_00001F50+1
-_000011D0: .4byte FUN_0000275E+1
-_000011D4: .4byte FUN_000027D4+1
+_000011D0: .4byte InitKeycode+1
+_000011D4: .4byte ApplyKeycode+1
 _000011D8: .4byte FUN_00002036+1
-_000011DC: .4byte FUN_00001FFA+1
-_000011E0: .4byte FUN_000020BC+1
+_000011DC: .4byte Encrypt_64bit+1
+_000011E0: .4byte Decrypt_64bit+1
 _000011E4: .4byte FUN_000027F8+1
 _000011E8: .4byte FUN_000028B4+1
 _000011EC: .4byte FUN_00002F92+1
@@ -537,7 +543,7 @@ _00001266:
 	ldr r0, [sp, #8]
 	str r4, [r0, #0x58]
 	bl FUN_000025F0
-	bl __VENEER_000010D8
+	bl __VENEER__000010D8
 	bl FUN_0000121A
 	cmp r0, #0
 	bne _000012A8
@@ -643,7 +649,7 @@ _0000133C:
 	bl SVC_GetCRC16
 	strh r0, [r5, #0xa]
 _00001352:
-	bl __VENEER_00001140
+	bl __VENEER__00001140
 	ldr r0, _000015E4 @ =FUN_00001204+1
 	ldr r1, _000015E8 @ =0x04000300
 	str r0, [r1, #8]
@@ -652,7 +658,7 @@ _00001352:
 	add r0, sp, #4
 	ldr r2, _000015EC @ =0x01000844
 	ldr r1, _000015C0 @ =0x037F8000
-	bl __VENEER_SVC_CpuFastSet
+	bl __VENEER__SVC_CpuFastSet
 	ldrh r0, [r5, #0x2c]
 	cmp r0, #0
 	beq _00001374
@@ -1237,7 +1243,7 @@ FUN_00001796: @ 0x00001796
 	subs r0, #0x10
 	adds r1, r2, #4
 	adds r0, #0x10
-	bl FUN_00001FFA
+	bl Encrypt_64bit
 	ldr r7, _000019B4 @ =0x04000180
 	adds r7, #0x80
 	ldr r6, [r7, #8]
@@ -2223,7 +2229,7 @@ FUN_00001ED2: @ 0x00001ED2
 	lsls r1, r1, #0x13
 	push {r7, lr}
 	movs r0, #0
-	bl __VENEER_SVC_IntrWait
+	bl __VENEER__SVC_IntrWait
 	bl FUN_00001EBA
 	pop {r7}
 	pop {r3}
@@ -2238,7 +2244,7 @@ FUN_00001EE8: @ 0x00001EE8
 	adds r5, #0x7c
 	adds r1, r4, #0
 	adds r0, r5, #0
-	bl __VENEER_00001110
+	bl __VENEER_BiosCall_Encrypt_64bit
 	ldr r1, _00001FA4 @ =0x037FA10E
 	ldr r0, [r4, #4]
 	ldr r2, _00001F7C @ =0x037F8000
@@ -2267,7 +2273,7 @@ FUN_00001EE8: @ 0x00001EE8
 	adds r1, #8
 	str r0, [r4, #0x34]
 	adds r0, r5, #0
-	bl __VENEER_00001108
+	bl __VENEER_BiosCall_Encrypt_64bit_ExpandedArgs
 	pop {r3, r4, r5}
 	pop {r3}
 	bx r3
@@ -2281,7 +2287,7 @@ FUN_00001F3A: @ 0x00001F3A
 	adds r0, r2, #0
 	adds r0, #0x30
 	ldr r1, _00001FAC @ =0x027FFE0C
-	bl __VENEER_000010E0
+	bl __VENEER__000010E0
 	pop {r7}
 	pop {r3}
 	bx r3
@@ -2326,8 +2332,8 @@ _00001FAC: .4byte 0x027FFE0C
 _00001FB0: .4byte _00001088
 	thumb_func_end FUN_00001F50
 
-	thumb_func_start FUN_00001FB4
-FUN_00001FB4: @ 0x00001FB4
+	thumb_func_start EncryptDecryptStep
+EncryptDecryptStep: @ 0x00001FB4
 	push {r4, r5}
 	lsls r4, r1, #0x18
 	lsrs r1, r1, #8
@@ -2363,10 +2369,13 @@ FUN_00001FB4: @ 0x00001FB4
 	pop {r4, r5}
 	adds r0, r0, r2
 	bx lr
-	thumb_func_end FUN_00001FB4
+	thumb_func_end EncryptDecryptStep
 
-	non_word_aligned_thumb_func_start FUN_00001FFA
-FUN_00001FFA: @ 0x00001FFA
+	non_word_aligned_thumb_func_start Encrypt_64bit
+Encrypt_64bit: @ 0x00001FFA
+	@ r0: key table
+	@ r1: ptr+0
+	@ r2: ptr+4
 	push {r0, r1, r2, r4, r5, r6, r7, lr}
 	ldr r2, [sp, #4]
 	adds r5, r0, #0
@@ -2380,7 +2389,7 @@ _00002008:
 	eors r7, r0
 	adds r1, r7, #0
 	adds r0, r5, #0
-	bl FUN_00001FB4
+	bl EncryptDecryptStep
 	eors r0, r6
 	adds r6, r7, #0
 	adds r4, #1
@@ -2397,7 +2406,7 @@ _00002008:
 	pop {r1, r2, r3, r4, r5, r6, r7}
 	pop {r3}
 	bx r3
-	thumb_func_end FUN_00001FFA
+	thumb_func_end Encrypt_64bit
 
 	non_word_aligned_thumb_func_start FUN_00002036
 FUN_00002036: @ 0x00002036
@@ -2435,7 +2444,7 @@ _0000206C:
 	mov r2, sp
 	add r1, sp, #4
 	adds r0, r5, #0
-	bl FUN_00001FFA
+	bl Encrypt_64bit
 	lsls r0, r4, #2
 	ldr r1, [sp, #4]
 	adds r4, #2
@@ -2454,7 +2463,7 @@ _00002090:
 	mov r2, sp
 	add r1, sp, #4
 	adds r0, r5, #0
-	bl FUN_00001FFA
+	bl Encrypt_64bit
 	lsls r0, r4, #2
 	ldr r1, [sp, #4]
 	adds r0, r7, r0
@@ -2474,8 +2483,11 @@ _00002090:
 	bx r3
 	thumb_func_end FUN_00002036
 
-	thumb_func_start FUN_000020BC
-FUN_000020BC: @ 0x000020BC
+	thumb_func_start Decrypt_64bit
+Decrypt_64bit: @ 0x000020BC
+	@ r0: key table
+	@ r1: ptr+0
+	@ r2: ptr+4
 	push {r0, r1, r2, r4, r5, r6, r7, lr}
 	ldr r2, [sp, #4]
 	adds r5, r0, #0
@@ -2489,7 +2501,7 @@ _000020CA:
 	eors r7, r0
 	adds r1, r7, #0
 	adds r0, r5, #0
-	bl FUN_00001FB4
+	bl EncryptDecryptStep
 	eors r0, r6
 	adds r6, r7, #0
 	subs r4, #1
@@ -2506,7 +2518,7 @@ _000020CA:
 	pop {r1, r2, r3, r4, r5, r6, r7}
 	pop {r3}
 	bx r3
-	thumb_func_end FUN_000020BC
+	thumb_func_end Decrypt_64bit
 
 	thumb_func_start FUN_000020F8
 FUN_000020F8: @ 0x000020F8
@@ -2697,11 +2709,11 @@ _00002252:
 	movs r2, #2
 	adds r1, #0x18
 	mov r0, sp
-	bl __VENEER_SVC_CpuFastSet
+	bl __VENEER__SVC_CpuFastSet
 	movs r2, #2
 	adds r1, r5, #0
 	add r0, sp, #8
-	bl __VENEER_SVC_CpuFastSet
+	bl __VENEER__SVC_CpuFastSet
 	pop {r0, r1, r2, r3, r4, r5, r6}
 	pop {r3}
 	bx r3
@@ -2836,7 +2848,7 @@ FUN_00002330: @ 0x00002330
 	bl FUN_000033A4
 	adds r1, r5, #0
 	ldr r0, _00002588 @ =0x037F90C4
-	bl __VENEER_00001130
+	bl __VENEER_BiosCall_Decrypt_64bit
 _00002350:
 	ldrh r1, [r4, #0xa]
 	adds r0, r1, #1
@@ -2969,6 +2981,7 @@ _00002428:
 _00002432:
 	adds r0, r4, #0
 	b _000023D4
+
 _00002436:
 	push {r4, r5, r7, lr}
 	adds r4, r1, #0
@@ -3008,7 +3021,7 @@ FUN_00002462: @ 0x00002462
 	adds r1, r5, #0
 	adds r1, #0x38
 	ldr r0, _00002588 @ =0x037F90C4
-	bl __VENEER_000010EC
+	bl __VENEER_BiosCall_InitKeycode
 	ldrh r1, [r4, #0x14]
 	movs r3, #4
 	adds r2, r3, #0
@@ -3186,7 +3199,7 @@ FUN_000025C2: @ 0x000025C2
 	mov r0, sp
 	ldr r2, _0000295C @ =0x01000F80
 	ldr r1, _00002960 @ =0x0380C000
-	bl __VENEER_SVC_CpuFastSet
+	bl __VENEER__SVC_CpuFastSet
 	add sp, #4
 	pop {r3}
 	bx r3
@@ -3201,7 +3214,7 @@ FUN_000025D8: @ 0x000025D8
 	mov r0, sp
 	ldr r1, _00002964 @ =0x037F8000
 	adds r2, #0x80
-	bl __VENEER_SVC_CpuFastSet
+	bl __VENEER__SVC_CpuFastSet
 	add sp, #4
 	pop {r3}
 	bx r3
@@ -3215,7 +3228,7 @@ FUN_000025F0: @ 0x000025F0
 	str r0, [sp]
 	mov r0, sp
 	lsls r1, r2, #0xb
-	bl __VENEER_SVC_CpuFastSet
+	bl __VENEER__SVC_CpuFastSet
 	add sp, #4
 	pop {r3}
 	bx r3
@@ -3414,8 +3427,8 @@ _00002758:
 	bx r3
 	thumb_func_end FUN_000026CA
 
-	non_word_aligned_thumb_func_start FUN_0000275E
-FUN_0000275E: @ 0x0000275E
+	non_word_aligned_thumb_func_start InitKeycode
+InitKeycode: @ 0x0000275E
 	push {r3, r4, r5, r6, r7, lr}
 	adds r6, r0, #0
 	adds r4, r2, #0
@@ -3423,20 +3436,20 @@ FUN_0000275E: @ 0x0000275E
 	adds r5, r3, #0
 	adds r1, r6, #0
 	ldr r2, _00002994 @ =0x00001048
-	ldr r0, _00002990 @ =_00000030
-	bl __VENEER_00001154
+	ldr r0, _00002990 @ =EncryptionKeys
+	bl __VENEER_BiosCall_CopyData
 	ldr r0, [r7]
 	str r0, [r4]
 	ldr r0, [r7]
-	bl __VENEER_000010A8
+	bl __VENEER_BiosCall_Div2_1
 	str r0, [r4, #4]
 	ldr r0, [r7]
-	bl __VENEER_000010B0
+	bl __VENEER_BiosCall_Mul2_1
 	adds r2, r5, #0
 	adds r1, r4, #0
 	str r0, [r4, #8]
 	adds r0, r6, #0
-	bl __VENEER_000010F8
+	bl __VENEER_BiosCall_ApplyKeycode
 	ldr r1, _00002984 @ =0x027FF800
 	ldr r7, _00002964 @ =0x037F8000
 	adds r1, #0x30
@@ -3459,7 +3472,7 @@ _000027AA:
 	adds r1, #0x20
 _000027B6:
 	adds r0, r6, #0
-	bl __VENEER_00001130
+	bl __VENEER_BiosCall_Decrypt_64bit
 	cmp r5, #8
 	bls _000027C4
 	movs r0, #1
@@ -3468,30 +3481,30 @@ _000027C4:
 	adds r2, r5, #0
 	adds r1, r4, #0
 	adds r0, r6, #0
-	bl __VENEER_000010F8
+	bl __VENEER_BiosCall_ApplyKeycode
 	pop {r3, r4, r5, r6, r7}
 	pop {r3}
 	bx r3
-	thumb_func_end FUN_0000275E
+	thumb_func_end InitKeycode
 
-	thumb_func_start FUN_000027D4
-FUN_000027D4: @ 0x000027D4
+	thumb_func_start ApplyKeycode
+ApplyKeycode: @ 0x000027D4
 	push {r4, r5, r6, lr}
 	adds r5, r1, #0
 	adds r4, r0, #0
 	adds r6, r2, #0
-	bl __VENEER_00001120
+	bl __VENEER_BiosCall_Encrypt_64bit_Plus4
 	adds r1, r5, #0
 	adds r0, r4, #0
-	bl __VENEER_00001110
+	bl __VENEER_BiosCall_Encrypt_64bit
 	adds r2, r6, #0
 	adds r1, r5, #0
 	adds r0, r4, #0
-	bl __VENEER_00001110_2
+	bl __VENEER__00001100
 	pop {r4, r5, r6}
 	pop {r3}
 	bx r3
-	thumb_func_end FUN_000027D4
+	thumb_func_end ApplyKeycode
 
 	thumb_func_start FUN_000027F8
 FUN_000027F8: @ 0x000027F8
@@ -3524,12 +3537,12 @@ _00002818:
 	asrs r2, r0, #2
 	ldr r0, [sp, #4]
 	adds r1, r4, #0
-	bl __VENEER_0000115C
+	bl __VENEER__0000115C
 	adds r1, r4, #0
 	ldr r0, [sp, #8]
-	bl __VENEER_00001130
+	bl __VENEER_BiosCall_Decrypt_64bit
 _0000283C:
-	bl __VENEER_00001148
+	bl __VENEER__00001148
 	ldr r0, _00002964 @ =0x037F8000
 	adds r0, #0x40
 	ldrh r0, [r0]
@@ -3537,7 +3550,7 @@ _0000283C:
 	beq _000028AE
 	adds r1, r4, #0
 	ldr r0, [sp, #8]
-	bl __VENEER_00001130
+	bl __VENEER_BiosCall_Decrypt_64bit
 	ldr r2, _000029A0 @ =_00001098
 	ldr r1, [r4]
 	ldr r3, [r2]
@@ -3556,7 +3569,7 @@ _0000286E:
 	adds r7, #8
 	adds r1, r7, #0
 	ldr r0, [sp, #8]
-	bl __VENEER_00001130
+	bl __VENEER_BiosCall_Decrypt_64bit
 _00002878:
 	subs r6, #8
 	cmp r6, #0
@@ -3574,7 +3587,7 @@ _00002880:
 	adds r2, r0, #0
 	mov r0, sp
 	adds r1, r4, #0
-	bl __VENEER_SVC_CpuFastSet
+	bl __VENEER__SVC_CpuFastSet
 	movs r0, #1
 	strh r0, [r7, #0xe]
 _0000289E:
@@ -3584,7 +3597,7 @@ _0000289E:
 	asrs r2, r0, #2
 	adds r0, r4, #0
 	ldr r1, [sp, #4]
-	bl __VENEER_0000115C
+	bl __VENEER__0000115C
 _000028AE:
 	pop {r1, r2, r3, r4, r5, r6, r7}
 	pop {r3}
@@ -3600,15 +3613,15 @@ FUN_000028B4: @ 0x000028B4
 	adds r4, r5, #0
 	subs r4, #0x30
 	ldr r0, [r4, #4]
-	bl __VENEER_000010B8
+	bl __VENEER__000010B8
 	str r0, [r4, #4]
 	ldr r0, [r4, #8]
-	bl __VENEER_000010C0
+	bl __VENEER__000010C0
 	adds r2, r6, #0
 	adds r1, r4, #0
 	str r0, [r4, #8]
 	adds r0, r5, #0
-	bl __VENEER_000010F8
+	bl __VENEER_BiosCall_ApplyKeycode
 	pop {r4, r5, r6}
 	pop {r3}
 	bx r3
@@ -3691,7 +3704,7 @@ _00002980: .4byte _000010A4
 _00002984: .4byte 0x027FF800
 _00002988: .4byte _000010A0
 _0000298C: .4byte _000010A2
-_00002990: .4byte _00000030
+_00002990: .4byte EncryptionKeys
 _00002994: .4byte 0x00001048
 _00002998: .4byte 0x027FFE00
 _0000299C: .4byte 0x037F90C4
@@ -4747,157 +4760,157 @@ __call_via_r5: @ 0x00003308
 	bx r5
 	thumb_func_end __call_via_r5
 
-	thumb_func_start __VENEER_000010D8
-__VENEER_000010D8: @ 0x0000330C
+	thumb_func_start __VENEER__000010D8
+__VENEER__000010D8: @ 0x0000330C
 	bx pc
 	nop
 	.arm
 	b _000010D8
-	thumb_func_end __VENEER_000010D8
+	thumb_func_end __VENEER__000010D8
 
-	thumb_func_start __VENEER_00001140
-__VENEER_00001140: @ 0x00003314
+	thumb_func_start __VENEER__00001140
+__VENEER__00001140: @ 0x00003314
 	bx pc
 	nop
 	.arm
 	b _00001140
-	thumb_func_end __VENEER_00001140
+	thumb_func_end __VENEER__00001140
 
-	thumb_func_start __VENEER_SVC_CpuFastSet
-__VENEER_SVC_CpuFastSet: @ 0x0000331C
+	thumb_func_start __VENEER__SVC_CpuFastSet
+__VENEER__SVC_CpuFastSet: @ 0x0000331C
 	bx pc
 	nop
 	.arm
 	b SVC_CpuFastSet
-	thumb_func_end __VENEER_SVC_CpuFastSet
+	thumb_func_end __VENEER__SVC_CpuFastSet
 
-	thumb_func_start __VENEER_SVC_IntrWait
-__VENEER_SVC_IntrWait: @ 0x00003324
+	thumb_func_start __VENEER__SVC_IntrWait
+__VENEER__SVC_IntrWait: @ 0x00003324
 	bx pc
 	nop
 	.arm
 	b SVC_IntrWait
-	thumb_func_end __VENEER_SVC_IntrWait
+	thumb_func_end __VENEER__SVC_IntrWait
 
-	thumb_func_start __VENEER_00001110
-__VENEER_00001110: @ 0x0000332C
+	thumb_func_start __VENEER_BiosCall_Encrypt_64bit
+__VENEER_BiosCall_Encrypt_64bit: @ 0x0000332C
 	bx pc
 	nop
 	.arm
-	b _00001110
-	thumb_func_end __VENEER_00001110
+	b BiosCall_Encrypt_64bit
+	thumb_func_end __VENEER_BiosCall_Encrypt_64bit
 
-	thumb_func_start __VENEER_00001108
-__VENEER_00001108: @ 0x00003334
+	thumb_func_start __VENEER_BiosCall_Encrypt_64bit_ExpandedArgs
+__VENEER_BiosCall_Encrypt_64bit_ExpandedArgs: @ 0x00003334
 	bx pc
 	nop
 	.arm
-	b _00001108
-	thumb_func_end __VENEER_00001108
+	b BiosCall_Encrypt_64bit_ExpandedArgs
+	thumb_func_end __VENEER_BiosCall_Encrypt_64bit_ExpandedArgs
 
-	thumb_func_start __VENEER_000010E0
-__VENEER_000010E0: @ 0x0000333C
+	thumb_func_start __VENEER__000010E0
+__VENEER__000010E0: @ 0x0000333C
 	bx pc
 	nop
 	.arm
 	b _000010E0
-	thumb_func_end __VENEER_000010E0
+	thumb_func_end __VENEER__000010E0
 
-	thumb_func_start __VENEER_00001130
-__VENEER_00001130: @ 0x00003344
+	thumb_func_start __VENEER_BiosCall_Decrypt_64bit
+__VENEER_BiosCall_Decrypt_64bit: @ 0x00003344
 	bx pc
 	nop
 	.arm
-	b _00001130
-	thumb_func_end __VENEER_00001130
+	b BiosCall_Decrypt_64bit
+	thumb_func_end __VENEER_BiosCall_Decrypt_64bit
 
-	thumb_func_start __VENEER_000010EC
-__VENEER_000010EC: @ 0x0000334C
+	thumb_func_start __VENEER_BiosCall_InitKeycode
+__VENEER_BiosCall_InitKeycode: @ 0x0000334C
 	bx pc
 	nop
 	.arm
-	b _000010EC
-	thumb_func_end __VENEER_000010EC
+	b BiosCall_InitKeycode
+	thumb_func_end __VENEER_BiosCall_InitKeycode
 
-	thumb_func_start __VENEER_00001154
-__VENEER_00001154: @ 0x00003354
+	thumb_func_start __VENEER_BiosCall_CopyData
+__VENEER_BiosCall_CopyData: @ 0x00003354
 	bx pc
 	nop
 	.arm
-	b _00001154
-	thumb_func_end __VENEER_00001154
+	b BiosCall_CopyData
+	thumb_func_end __VENEER_BiosCall_CopyData
 
-	thumb_func_start __VENEER_000010A8
-__VENEER_000010A8: @ 0x0000335C
+	thumb_func_start __VENEER_BiosCall_Div2_1
+__VENEER_BiosCall_Div2_1: @ 0x0000335C
 	bx pc
 	nop
 	.arm
-	b _000010A8
-	thumb_func_end __VENEER_000010A8
+	b BiosCall_Div2_1
+	thumb_func_end __VENEER_BiosCall_Div2_1
 
-	thumb_func_start __VENEER_000010B0
-__VENEER_000010B0: @ 0x00003364
+	thumb_func_start __VENEER_BiosCall_Mul2_1
+__VENEER_BiosCall_Mul2_1: @ 0x00003364
 	bx pc
 	nop
 	.arm
-	b _000010B0
-	thumb_func_end __VENEER_000010B0
+	b BiosCall_Mul2_1
+	thumb_func_end __VENEER_BiosCall_Mul2_1
 
-	thumb_func_start __VENEER_000010F8
-__VENEER_000010F8: @ 0x0000336C
+	thumb_func_start __VENEER_BiosCall_ApplyKeycode
+__VENEER_BiosCall_ApplyKeycode: @ 0x0000336C
 	bx pc
 	nop
 	.arm
-	b _000010F8
-	thumb_func_end __VENEER_000010F8
+	b BiosCall_ApplyKeycode
+	thumb_func_end __VENEER_BiosCall_ApplyKeycode
 
-	thumb_func_start __VENEER_00001120
-__VENEER_00001120: @ 0x00003374
+	thumb_func_start __VENEER_BiosCall_Encrypt_64bit_Plus4
+__VENEER_BiosCall_Encrypt_64bit_Plus4: @ 0x00003374
 	bx pc
 	nop
 	.arm
-	b _00001120
-	thumb_func_end __VENEER_00001120
+	b BiosCall_Encrypt_64bit_Plus4
+	thumb_func_end __VENEER_BiosCall_Encrypt_64bit_Plus4
 
-	thumb_func_start __VENEER_00001110_2
-__VENEER_00001110_2: @ 0x0000337C
+	thumb_func_start __VENEER__00001100
+__VENEER__00001100: @ 0x0000337C
 	bx pc
 	nop
 	.arm
 	b _00001100
-	thumb_func_end __VENEER_00001110_2
+	thumb_func_end __VENEER__00001100
 
-	thumb_func_start __VENEER_0000115C
-__VENEER_0000115C: @ 0x00003384
+	thumb_func_start __VENEER__0000115C
+__VENEER__0000115C: @ 0x00003384
 	bx pc
 	nop
 	.arm
 	b _0000115C
-	thumb_func_end __VENEER_0000115C
+	thumb_func_end __VENEER__0000115C
 
-	thumb_func_start __VENEER_00001148
-__VENEER_00001148: @ 0x0000338C
+	thumb_func_start __VENEER__00001148
+__VENEER__00001148: @ 0x0000338C
 	bx pc
 	nop
 	.arm
 	b _00001148
-	thumb_func_end __VENEER_00001148
+	thumb_func_end __VENEER__00001148
 
-	thumb_func_start __VENEER_000010B8
-__VENEER_000010B8: @ 0x00003394
+	thumb_func_start __VENEER__000010B8
+__VENEER__000010B8: @ 0x00003394
 	bx pc
 	nop
 	.arm
 	b _000010B8
-	thumb_func_end __VENEER_000010B8
+	thumb_func_end __VENEER__000010B8
 
-	thumb_func_start __VENEER_000010C0
-__VENEER_000010C0: @ 0x0000339C
+	thumb_func_start __VENEER__000010C0
+__VENEER__000010C0: @ 0x0000339C
 	bx pc
 	nop
 	.arm
 	b _000010C0
-	thumb_func_end __VENEER_000010C0
+	thumb_func_end __VENEER__000010C0
 
 	thumb_func_start FUN_000033A4
 FUN_000033A4: @ 0x000033A4
