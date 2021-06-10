@@ -2,46 +2,39 @@
 	.section .text
 	.syntax unified
 
-	arm_func_start FUN_00000000
-FUN_00000000: @ 0x00000000
-	b _00000020
-	arm_func_end FUN_00000000
+	.set REG_BASE,                                                    0x04000000
 
-	arm_func_start FUN_00000004
-FUN_00000004: @ 0x00000004
-	b FUN_00002C8C
-	arm_func_end FUN_00000004
+	.set REG_OFFSET_IPCSYNC,                                               0x180
+	.set REG_IPCSYNC,                              REG_BASE + REG_OFFSET_IPCSYNC
 
-	arm_func_start FUN_00000008
-FUN_00000008: @ 0x00000008
-	b _00002DDC
-	arm_func_end FUN_00000008
+	.set REG_OFFSET_POSTFLG,                                               0x300
+	.set REG_POSTFLG,                              REG_BASE + REG_OFFSET_POSTFLG
 
-	arm_func_start FUN_0000000C
-FUN_0000000C: @ 0x0000000C
-	b FUN_00002C8C
-	arm_func_end FUN_0000000C
+	.set REG_OFFSET_BIOSPROT,                                              0x308
+	.set REG_BIOSPROT,                            REG_BASE + REG_OFFSET_BIOSPROT
 
-	arm_func_start FUN_00000010
-FUN_00000010: @ 0x00000010
-	b FUN_00002C8C
-	arm_func_end FUN_00000010
+	.set REG_OFFSET_HALTCNT,                                               0x301
+	.set REG_HALTCNT,                              REG_BASE + REG_OFFSET_HALTCNT
 
-	arm_func_start FUN_00000014
-FUN_00000014: @ 0x00000014
-	b FUN_00002C8C
-	arm_func_end FUN_00000014
-
-	arm_func_start FUN_00000018
-FUN_00000018: @ 0x00000018
-	b FUN_00002DC4
-	arm_func_end FUN_00000018
-
-	arm_func_start FUN_0000001C
-FUN_0000001C: @ 0x0000001C
-	b FUN_00002C8C
-_00000020:
-	b _00002CD0
+	.arm
+_reset:
+	b _reset_vector
+_reserved:
+	b abort_vector
+_swi:
+	b swi_vector
+_abort_pfch:
+	b abort_vector
+_abort_data:
+	b abort_vector
+_reserved_2:
+	b abort_vector
+_irq:
+	b irq_vector
+_reserved_3:
+	b abort_vector
+_reset_vector:
+	b reset_vector
 _00000024:
 	.word 0x879B9B05
 _00000028:
@@ -50,7 +43,9 @@ _00000029:
 	.byte 0x60
 _0000002A:
 	.byte 0xE8, 0x4D, 0x5A, 0xB1, 0x17, 0x8F
-EncryptionKeys:
+
+	.global EncryptionKeys
+EncryptionKeys: @ 0x00000030
 	.word 0x5F20D599, 0xB9F54457, 0xD9A4196E, 0x945A6A9E
 	.word 0xEBF1AED8, 0x3AE27541, 0x32D08293, 0xD531EE33
 	.word 0x9A6157CC, 0x1BA20637, 0xF5723979, 0xBEF6AE55
@@ -312,14 +307,16 @@ EncryptionKeys:
 	.word 0x6BA63A6B, 0x432FD235, 0xB5FD02CD, 0xAA5BBCE9
 	.word 0x7E19A4D8, 0x81945D0E, 0xAD776F9E, 0x93740ED6
 	.word 0x18C4E796, 0x19F5AD5F
+	.size EncryptionKeys,.-EncryptionKeys
+
 _00001078:
 	.byte 0x1E, 0x27, 0x2D, 0x36, 0x4B, 0x63, 0x72, 0x78
 	.byte 0x93, 0x9C, 0xB1, 0xB4, 0xC6, 0xC9, 0xD8, 0xE1
-_00001088:
+_cstr8_NmMdOnly:
 	.ascii "NmMdOnly"
-_00001090:
+_cstr8_enPngOFF:
 	.ascii "enPngOFF"
-_00001098:
+_cstr8_encryObj:
 	.ascii "encryObj"
 _000010A0:
 	.2byte 0x4E54
@@ -331,76 +328,94 @@ _000010A4:
 	.align 2
 BiosCall_Div2_1:
 	lsr r0, r0, #1
-	b _000010C8
+	b BiosSafeMathOp
+
 BiosCall_Mul2_1:
 	lsl r0, r0, #1
-	b _000010C8
+	b BiosSafeMathOp
+
 _000010B8:
 	lsl r0, r0, #1
-	b _000010C8
+	b BiosSafeMathOp
+
 _000010C0:
 	lsr r0, r0, #1
-	b _000010C8
-_000010C8:
+	b BiosSafeMathOp
+
+BiosSafeMathOp:
 	tst lr, #0xff000000
 	movne r0, #0
 	movne lr, #4
 	bx lr
-_000010D8:
+
+BiosCall_FUN_00001F50:
 	ldr ip, _000011CC @ =FUN_00001F50+1
-	b _00001164
-_000010E0:
+	b BiosSafeCall
+
+BiosCall_InitKeycode_r3eq8:
 	mov r3, #8
 	ldr ip, _000011D0 @ =InitKeycode+1
-	b _00001164
-BiosCall_InitKeycode:
+	b BiosSafeCall
+
+BiosCall_InitKeycode_r3eqC:
 	mov r3, #0xc
 	ldr ip, _000011D0 @ =InitKeycode+1
-	b _00001164
+	b BiosSafeCall
+
 BiosCall_ApplyKeycode:
 	ldr ip, _000011D4 @ =ApplyKeycode+1
-	b _00001164
-_00001100:
+	b BiosSafeCall
+
+BiosCall_FUN_00002036:
 	ldr ip, _000011D8 @ =FUN_00002036+1
-	b _00001164
+	b BiosSafeCall
+
 BiosCall_Encrypt_64bit_ExpandedArgs:
 	ldr ip, _000011DC @ =Encrypt_64bit+1
-	b _00001164
+	b BiosSafeCall
+
 BiosCall_Encrypt_64bit:
 	@ r0: key table
 	@ r1: ptr
 	mov r2, r1
 	add r1, r1, #4
 	ldr ip, _000011DC @ =Encrypt_64bit+1
-	b _00001164
+	b BiosSafeCall
+
 BiosCall_Encrypt_64bit_Plus4:
 	@ r0: key table
 	@ r1: ptr-4
 	add r2, r1, #4
 	add r1, r1, #8
 	ldr ip, _000011DC @ =Encrypt_64bit+1
-	b _00001164
+	b BiosSafeCall
+
 BiosCall_Decrypt_64bit:
 	@ r0: key table
 	@ r1: ptr
 	mov r2, r1
 	add r1, r1, #4
 	ldr ip, _000011E0 @ =Decrypt_64bit+1
-	b _00001164
+	b BiosSafeCall
+
 BiosCall_DecryptARM7SecureArea:
 	ldr ip, _000011E4 @ =DecryptARM7SecureArea+1
-	b _00001164
-_00001148:
+	b BiosSafeCall
+
+BiosCall_FUN_000028B4:
 	mov r0, #8
 	ldr ip, _000011E8 @ =FUN_000028B4+1
-	b _00001164
+	b BiosSafeCall
+
 BiosCall_CopyData:
-	ldr ip, _000011EC @ =FUN_00002F92+1
-	b _00001164
+	ldr ip, _000011EC @ =CopyData+1
+	b BiosSafeCall
+
 BiosCall_CpuFastSet:
 	ldr ip, _000011F0 @ =SVC_CpuFastSet
-	b _00001164
-_00001164:
+	b BiosSafeCall
+
+BiosSafeCall:
 	tst lr, #0xff000000
 	bxeq ip
 	mov ip, #0
@@ -410,35 +425,34 @@ _00001164:
 	mov r0, #0
 	mov lr, #4
 	bx lr
-	arm_func_end FUN_0000001C
 
 	thumb_func_start SVC_GetBootProcs
 SVC_GetBootProcs: @ 0x00001188
 	ldr r2, _00001198 @ =_00003248+1
 	ldr r0, _000011F4 @ =FUN_0000145A+1
 	ldr r1, _000011F8 @ =FUN_00001E74+1
-	ldr r3, _000011FC @ =FUN_000011A4
+	ldr r3, _000011FC @ =EnterAGBMode
 	eors r3, r0 @ 0x5FF
 	eors r0, r1 @ 0xA2E
-	eors r1, r2 @ 0x2C3D
+	eors r1, r2 @ 0x2C3C
 	bx lr
 	.align 2, 0
 _00001198: .4byte _00003248+1
 	thumb_func_end SVC_GetBootProcs
 
-	thumb_func_start FUN_0000119C
-FUN_0000119C: @ 0x0000119C
+	thumb_func_start SignalBootFinish
+SignalBootFinish: @ 0x0000119C
 	movs r1, #1
-	ldr r2, _00001200 @ =0x04000300
+	ldr r2, _00001200 @ =REG_POSTFLG
 	strb r1, [r2]
 	bx lr
-	thumb_func_end FUN_0000119C
+	thumb_func_end SignalBootFinish
 
-	arm_func_start FUN_000011A4
-FUN_000011A4: @ 0x000011A4
+	arm_func_start EnterAGBMode
+EnterAGBMode: @ 0x000011A4
 	mov r2, #0x40
 	b SVC_CustomHalt
-	arm_func_end FUN_000011A4
+	arm_func_end EnterAGBMode
 
 	arm_func_start SVC_Halt
 SVC_Halt: @ 0x000011AC
@@ -450,10 +464,10 @@ SVC_Halt: @ 0x000011AC
 SVC_Stop: @ 0x000011B4
 	mov r2, #0xc0
 SVC_CustomHalt:
-	mov ip, #64, #12
-	strb r2, [ip, #0x301]
-	mov r0, r0
-	mov r0, r0
+	mov ip, #64, #12      @ 0x04000000
+	strb r2, [ip, #0x301] @ 0x04000301 = HALTCNT
+	nop
+	nop
 	bx lr
 	.align 2, 0
 _000011CC: .4byte FUN_00001F50+1
@@ -464,17 +478,17 @@ _000011DC: .4byte Encrypt_64bit+1
 _000011E0: .4byte Decrypt_64bit+1
 _000011E4: .4byte DecryptARM7SecureArea+1
 _000011E8: .4byte FUN_000028B4+1
-_000011EC: .4byte FUN_00002F92+1
+_000011EC: .4byte CopyData+1
 _000011F0: .4byte SVC_CpuFastSet
 _000011F4: .4byte FUN_0000145A+1
 _000011F8: .4byte FUN_00001E74+1
-_000011FC: .4byte FUN_000011A4
-_00001200: .4byte 0x04000300
+_000011FC: .4byte EnterAGBMode
+_00001200: .4byte REG_POSTFLG
 	arm_func_end SVC_Stop
 
 	thumb_func_start FUN_00001204
 FUN_00001204: @ 0x00001204
-	ldr r2, _000015B0 @ =0x04000180
+	ldr r2, _000015B0 @ =REG_IPCSYNC
 _00001206:
 	ldrh r1, [r2]
 	lsls r1, r1, #0x1c
@@ -486,7 +500,7 @@ _00001206:
 
 	non_word_aligned_thumb_func_start FUN_00001212
 FUN_00001212: @ 0x00001212
-	ldr r1, _000015B0 @ =0x04000180
+	ldr r1, _000015B0 @ =REG_IPCSYNC
 	lsls r0, r0, #8
 	strh r0, [r1]
 	bx lr
@@ -543,7 +557,7 @@ _00001266:
 	ldr r0, [sp, #8]
 	str r4, [r0, #0x58]
 	bl FUN_000025F0
-	bl __VENEER__000010D8
+	bl __VENEER_BiosCall_FUN_00001F50
 	bl FUN_0000121A
 	cmp r0, #0
 	bne _000012A8
@@ -620,7 +634,7 @@ _000012F2:
 	bl FUN_00001ED2
 	bl FUN_00001660
 	ldr r0, [sp, #8]
-	ldr r1, _000015D8 @ =_00001090
+	ldr r1, _000015D8 @ =_cstr8_enPngOFF
 	ldr r0, [r0, #0x20]
 	ldr r2, [r1]
 	cmp r0, r2
@@ -651,8 +665,8 @@ _0000133C:
 _00001352:
 	bl __VENEER_BiosCall_DecryptARM7SecureArea
 	ldr r0, _000015E4 @ =FUN_00001204+1
-	ldr r1, _000015E8 @ =0x04000300
-	str r0, [r1, #8]
+	ldr r1, _000015E8 @ =REG_POSTFLG
+	str r0, [r1, #REG_BIOSPROT-REG_POSTFLG]
 	movs r0, #0
 	str r0, [sp, #4]
 	add r0, sp, #4
@@ -672,7 +686,7 @@ _00001374:
 	non_word_aligned_thumb_func_start FUN_0000137A
 FUN_0000137A: @ 0x0000137A
 	push {r4, r5, r7, lr}
-	ldr r1, _000015B0 @ =0x04000180
+	ldr r1, _000015B0 @ =REG_IPCSYNC
 	movs r0, #0xc0
 	adds r1, #0x20
 	ldr r5, _000015C4 @ =0x027FFE00
@@ -702,7 +716,7 @@ FUN_0000137A: @ 0x0000137A
 	non_word_aligned_thumb_func_start FUN_000013B6
 FUN_000013B6: @ 0x000013B6
 	push {r4, r5, r6, lr}
-	ldr r5, _000015B0 @ =0x04000180
+	ldr r5, _000015B0 @ =REG_IPCSYNC
 	movs r4, #0
 	strh r4, [r5]
 	movs r0, #1
@@ -716,13 +730,13 @@ FUN_000013B6: @ 0x000013B6
 	movs r0, #1
 	lsls r0, r0, #0x1d
 	str r0, [r5, #0x24]
-	ldr r1, _000015B0 @ =0x04000180
+	ldr r1, _000015B0 @ =REG_IPCSYNC
 	movs r0, #0x80
-	adds r1, #0x20
+	adds r1, #0x20 @ AUXSPICNT
 	strb r0, [r1, #1]
 	bl FUN_000025D8
 	bl FUN_000021E8
-	ldr r6, _000015B0 @ =0x04000180
+	ldr r6, _000015B0 @ =REG_IPCSYNC
 	movs r0, #0x41
 	lsls r0, r0, #0x11
 	subs r6, #0x80
@@ -758,7 +772,7 @@ FUN_000013B6: @ 0x000013B6
 	bl FUN_0000124A
 	strh r4, [r6, #2]
 	strh r4, [r6, #6]
-	ldr r0, _000015B0 @ =0x04000180
+	ldr r0, _000015B0 @ =REG_IPCSYNC
 	adds r0, #0x80
 	str r4, [r0, #8]
 	str r4, [r0, #0x10]
@@ -777,7 +791,7 @@ FUN_000013B6: @ 0x000013B6
 	non_word_aligned_thumb_func_start FUN_0000145A
 FUN_0000145A: @ 0x0000145A
 	push {r3, r4, r5, r6, r7, lr}
-	ldr r1, _000015E8 @ =0x04000300
+	ldr r1, _000015E8 @ =REG_POSTFLG
 	ldr r0, _000015B4 @ =0x027FF800
 	ldrb r1, [r1]
 	ldr r2, _000015C4 @ =0x027FFE00
@@ -805,7 +819,7 @@ _00001486:
 	ldrb r3, [r3, r1]
 	lsls r3, r3, #1
 	add pc, r3
-	movs r0, r0
+
 	.align 2, 0
 _00001490: @ jump table
 	.byte (_00001498 - _00001490)>>1 @ case 0
@@ -959,7 +973,7 @@ _00001592: @ 0x00001592
 	bl FUN_00001EBA
 	b _0000158E
 _000015A0: @ 0x000015A0
-	bl FUN_0000119C
+	bl SignalBootFinish
 	ldr r0, _000015E0 @ =0x0000FFFF
 _000015A6:
 	strh r0, [r4]
@@ -968,7 +982,7 @@ _000015A8:
 	ldrsh r0, [r4, r3]
 	b _00001470
 	.align 2, 0
-_000015B0: .4byte 0x04000180
+_000015B0: .4byte REG_IPCSYNC
 _000015B4: .4byte 0x027FF800
 _000015B8: .4byte 0x027FFFE0
 _000015BC: .4byte 0x0000CF56
@@ -978,11 +992,11 @@ _000015C8: .4byte 0x003BFE01
 _000015CC: .4byte FUN_00001C7E+1
 _000015D0: .4byte 0x0380FC40
 _000015D4: .4byte FUN_00001DC4+1
-_000015D8: .4byte _00001090
+_000015D8: .4byte _cstr8_enPngOFF
 _000015DC: .4byte 0x00406000
 _000015E0: .4byte 0x0000FFFF
 _000015E4: .4byte FUN_00001204+1
-_000015E8: .4byte 0x04000300
+_000015E8: .4byte REG_POSTFLG
 _000015EC: .4byte 0x01000844
 _000015F0: .4byte 0x083F1FFF
 _000015F4: .4byte 0x0380FC38
@@ -1048,7 +1062,7 @@ FUN_00001660: @ 0x00001660
 
 	non_word_aligned_thumb_func_start FUN_0000166A
 FUN_0000166A: @ 0x0000166A
-	ldr r2, _000019B4 @ =0x04000180
+	ldr r2, _000019B4 @ =REG_IPCSYNC
 _0000166C:
 	ldr r1, [r2, #0x24]
 	cmp r1, #0
@@ -1056,7 +1070,7 @@ _0000166C:
 	cmp r0, #3
 	bhi _00001696
 	movs r3, #0xc
-	ldr r1, _000019B4 @ =0x04000180
+	ldr r1, _000019B4 @ =REG_IPCSYNC
 	muls r0, r3, r0
 	subs r1, #0xd0
 	adds r0, r0, r1
@@ -1081,11 +1095,11 @@ FUN_00001698: @ 0x00001698
 	adds r4, r0, #0
 	ldr r0, [r0]
 	bl FUN_0000166A
-	ldr r1, _000019B4 @ =0x04000180
+	ldr r1, _000019B4 @ =REG_IPCSYNC
 	movs r0, #0xc0
 	adds r1, #0x20
 	strb r0, [r1, #1]
-	ldr r5, _000019B4 @ =0x04000180
+	ldr r5, _000019B4 @ =REG_IPCSYNC
 	movs r0, #0
 	adds r5, #0x28
 	movs r6, #1
@@ -1117,11 +1131,11 @@ _000016D8:
 	adds r0, r3, #0
 	bl FUN_00001698
 	ldr r1, [r5]
-	ldr r0, _000019B4 @ =0x04000180
+	ldr r0, _000019B4 @ =REG_IPCSYNC
 	cmp r1, #3
 	bhi _0000170E
 	movs r3, #0xc
-	ldr r2, _000019B4 @ =0x04000180
+	ldr r2, _000019B4 @ =REG_IPCSYNC
 	muls r1, r3, r1
 	subs r2, #0xd0
 	adds r1, r1, r2
@@ -1198,7 +1212,7 @@ FUN_00001750: @ 0x00001750
 	movs r1, #5
 	lsls r1, r1, #0x1d
 	orrs r0, r1
-	ldr r1, _000019B4 @ =0x04000180
+	ldr r1, _000019B4 @ =REG_IPCSYNC
 	str r0, [r1, #0x24]
 _00001772:
 	ldr r0, [r1, #0x24]
@@ -1244,7 +1258,7 @@ FUN_00001796: @ 0x00001796
 	adds r1, r2, #4
 	adds r0, #0x10
 	bl Encrypt_64bit
-	ldr r7, _000019B4 @ =0x04000180
+	ldr r7, _000019B4 @ =REG_IPCSYNC
 	adds r7, #0x80
 	ldr r6, [r7, #8]
 	movs r0, #0
@@ -1288,7 +1302,7 @@ _0000180A:
 	adds r0, #2
 	movs r1, #0
 	subs r0, r1, r0
-	ldr r1, _000019B4 @ =0x04000180
+	ldr r1, _000019B4 @ =REG_IPCSYNC
 	subs r1, #0x80
 	strh r0, [r1, #0xc]
 	movs r0, #0xc2
@@ -1371,7 +1385,7 @@ FUN_00001888: @ 0x00001888
 	ldr r0, [r4, #4]
 	lsls r1, r1, #0x18
 	orrs r0, r1
-	ldr r1, _000019B4 @ =0x04000180
+	ldr r1, _000019B4 @ =REG_IPCSYNC
 	str r0, [r1, #0x24]
 _000018A4:
 	ldr r0, [r1, #0x24]
@@ -1533,7 +1547,7 @@ FUN_0000198C: @ 0x0000198C
 _000019A8: .4byte 0x027FFE64
 _000019AC: .4byte 0x037F803C
 _000019B0: .4byte 0x000008F8
-_000019B4: .4byte 0x04000180
+_000019B4: .4byte REG_IPCSYNC
 _000019B8: .4byte 0x04100010
 _000019BC: .4byte 0xA7000001
 _000019C0: .4byte 0x027FF800
@@ -1670,7 +1684,7 @@ FUN_00001AAA: @ 0x00001AAA
 	orrs r4, r5
 	str r4, [r3, #0xc]
 	movs r4, #1
-	ldr r5, _00001D84 @ =0x04000180
+	ldr r5, _00001D84 @ =REG_IPCSYNC
 	lsls r4, r4, #0x1d
 	str r4, [r5, #0x24]
 	bl _000016D8
@@ -1786,7 +1800,7 @@ _00001B4C:
 
 	non_word_aligned_thumb_func_start FUN_00001B8E
 FUN_00001B8E: @ 0x00001B8E
-	ldr r0, _00001D84 @ =0x04000180
+	ldr r0, _00001D84 @ =REG_IPCSYNC
 	movs r1, #0
 	adds r0, #0x80
 	str r1, [r0, #8]
@@ -1918,7 +1932,7 @@ FUN_00001C42: @ 0x00001C42
 	non_word_aligned_thumb_func_start FUN_00001C7E
 FUN_00001C7E: @ 0x00001C7E
 	push {r4, r5, r7, lr}
-	ldr r3, _00001DA8 @ =0x04000300
+	ldr r3, _00001DA8 @ =REG_POSTFLG
 	ldr r4, _00001D70 @ =0x0380FC10
 	ldr r2, _00001D80 @ =0x037F8000
 	ldrb r3, [r3]
@@ -1987,7 +2001,7 @@ _00001CEE:
 	ldrh r0, [r2, #0x28]
 	cmp r0, #0
 	beq _00001D10
-	ldr r3, _00001DAC @ =_00001090
+	ldr r3, _00001DAC @ =_cstr8_enPngOFF
 	ldr r0, [r2, #0x20]
 	ldr r4, [r3]
 	cmp r0, r4
@@ -2032,13 +2046,13 @@ FUN_00001D28: @ 0x00001D28
 	lsls r2, r2, #8
 	orrs r2, r1
 	lsrs r1, r0, #0x19
-	ldr r0, _00001D84 @ =0x04000180
+	ldr r0, _00001D84 @ =REG_IPCSYNC
 _00001D4C:
 	ldr r3, [r0, #0x24]
 	cmp r3, #0
 	blt _00001D4C
 	str r2, [r0, #0x30]
-	ldr r2, _00001D84 @ =0x04000180
+	ldr r2, _00001D84 @ =REG_IPCSYNC
 	adds r2, #0x20
 	strh r1, [r2, #0x18]
 	ldr r1, _00001DB8 @ =_00000024
@@ -2057,7 +2071,7 @@ _00001D74: .4byte 0x027FFE40
 _00001D78: .4byte 0x08001FFF
 _00001D7C: .4byte 0xA0006000
 _00001D80: .4byte 0x037F8000
-_00001D84: .4byte 0x04000180
+_00001D84: .4byte REG_IPCSYNC
 _00001D88: .4byte 0x083F1FFF
 _00001D8C: .4byte 0x0FFFF000
 _00001D90: .4byte 0x0380FFC0
@@ -2066,8 +2080,8 @@ _00001D98: .4byte FUN_000018DC+1
 _00001D9C: .4byte FUN_00001AAA+1
 _00001DA0: .4byte _00001078
 _00001DA4: .4byte FUN_00001B2A+1
-_00001DA8: .4byte 0x04000300
-_00001DAC: .4byte _00001090
+_00001DA8: .4byte REG_POSTFLG
+_00001DAC: .4byte _cstr8_enPngOFF
 _00001DB0: .4byte _0000002A
 _00001DB4: .4byte _00000029
 _00001DB8: .4byte _00000024
@@ -2171,7 +2185,7 @@ _00001E70:
 
 	thumb_func_start FUN_00001E74
 FUN_00001E74: @ 0x00001E74
-	ldr r0, _00001F9C @ =0x04000300
+	ldr r0, _00001F9C @ =REG_POSTFLG
 	push {r4, lr}
 	ldr r3, _00001F84 @ =0x0380FC00
 	ldrb r0, [r0]
@@ -2287,7 +2301,7 @@ FUN_00001F3A: @ 0x00001F3A
 	adds r0, r2, #0
 	adds r0, #0x30
 	ldr r1, _00001FAC @ =0x027FFE0C
-	bl __VENEER__000010E0
+	bl __VENEER_BiosCall_InitKeycode_r3eq8
 	pop {r7}
 	pop {r3}
 	bx r3
@@ -2300,7 +2314,7 @@ FUN_00001F50: @ 0x00001F50
 	ldr r4, _00001F7C @ =0x037F8000
 	bl FUN_00001F3A
 	bl FUN_00001EE8
-	ldr r1, _00001FB0 @ =_00001088
+	ldr r1, _00001FB0 @ =_cstr8_NmMdOnly
 	ldr r0, [r4, #0x44]
 	ldr r2, [r1]
 	cmp r0, r2
@@ -2324,12 +2338,12 @@ _00001F8C: .4byte 0x00080040
 _00001F90: .4byte 0x0380FC40
 _00001F94: .4byte FUN_00001C7E+1
 _00001F98: .4byte FUN_00001DC4+1
-_00001F9C: .4byte 0x04000300
+_00001F9C: .4byte REG_POSTFLG
 _00001FA0: .4byte 0x0380FFC0
 _00001FA4: .4byte 0x037FA10E
 _00001FA8: .4byte FUN_00001EE8+1
 _00001FAC: .4byte 0x027FFE0C
-_00001FB0: .4byte _00001088
+_00001FB0: .4byte _cstr8_NmMdOnly
 	thumb_func_end FUN_00001F50
 
 	thumb_func_start EncryptDecryptStep
@@ -2377,10 +2391,10 @@ Encrypt_64bit: @ 0x00001FFA
 	@ r1: ptr+0
 	@ r2: ptr+4
 	push {r0, r1, r2, r4, r5, r6, r7, lr}
-	ldr r2, [sp, #4]
-	adds r5, r0, #0
+	ldr r2, [sp, #4] @ was r1
+	adds r5, r0, #0 @ key table
 	ldr r0, [r2]
-	ldr r1, [sp, #8]
+	ldr r1, [sp, #8] @ was r2
 	movs r4, #0
 	ldr r6, [r1]
 _00002008:
@@ -3021,7 +3035,7 @@ FUN_00002462: @ 0x00002462
 	adds r1, r5, #0
 	adds r1, #0x38
 	ldr r0, _00002588 @ =0x037F90C4
-	bl __VENEER_BiosCall_InitKeycode
+	bl __VENEER_BiosCall_InitKeycode_r3eqC
 	ldrh r1, [r4, #0x14]
 	movs r3, #4
 	adds r2, r3, #0
@@ -3429,13 +3443,14 @@ _00002758:
 
 	non_word_aligned_thumb_func_start InitKeycode
 InitKeycode: @ 0x0000275E
+	@ r0: dest
 	push {r3, r4, r5, r6, r7, lr}
 	adds r6, r0, #0
 	adds r4, r2, #0
 	adds r7, r1, #0
 	adds r5, r3, #0
 	adds r1, r6, #0
-	ldr r2, _00002994 @ =0x00001048
+	ldr r2, _00002994 @ =0x00001048      sizeof(EncryptionKeys)
 	ldr r0, _00002990 @ =EncryptionKeys
 	bl __VENEER_BiosCall_CopyData
 	ldr r0, [r7]
@@ -3500,7 +3515,7 @@ ApplyKeycode: @ 0x000027D4
 	adds r2, r6, #0
 	adds r1, r5, #0
 	adds r0, r4, #0
-	bl __VENEER__00001100
+	bl __VENEER_BiosCall_FUN_00002036
 	pop {r4, r5, r6}
 	pop {r3}
 	bx r3
@@ -3542,7 +3557,7 @@ _00002818:
 	ldr r0, [sp, #8]
 	bl __VENEER_BiosCall_Decrypt_64bit
 _0000283C:
-	bl __VENEER__00001148
+	bl __VENEER_BiosCall_FUN_000028B4
 	ldr r0, _00002964 @ =0x037F8000
 	adds r0, #0x40
 	ldrh r0, [r0]
@@ -3551,7 +3566,7 @@ _0000283C:
 	adds r1, r4, #0
 	ldr r0, [sp, #8]
 	bl __VENEER_BiosCall_Decrypt_64bit
-	ldr r2, _000029A0 @ =_00001098
+	ldr r2, _000029A0 @ =_cstr8_encryObj
 	ldr r1, [r4]
 	ldr r3, [r2]
 	ldr r0, _000029A4 @ =0xE7FFDEFF
@@ -3708,7 +3723,7 @@ _00002990: .4byte EncryptionKeys
 _00002994: .4byte 0x00001048
 _00002998: .4byte 0x027FFE00
 _0000299C: .4byte 0x037F90C4
-_000029A0: .4byte _00001098
+_000029A0: .4byte _cstr8_encryObj
 _000029A4: .4byte 0xE7FFDEFF
 _000029A8:
 	movs r1, #0x20
@@ -4124,8 +4139,8 @@ _00002C84: .4byte ARM7TablesBegin
 _00002C88: .4byte ARM7TablesEnd
 	thumb_func_end FUN_00002C5C
 
-	arm_func_start FUN_00002C8C
-FUN_00002C8C:
+	arm_func_start abort_vector
+abort_vector:
 	mrs sp, apsr
 	orr sp, sp, #0xc0
 	msr cpsr_fsxc, sp
@@ -4145,7 +4160,10 @@ _00002CC0:
 	msr spsr_fsxc, lr
 	pop {ip, lr}
 	subs pc, lr, #4
-_00002CD0:
+	arm_func_end abort_vector
+
+	arm_func_start reset_vector
+reset_vector:
 	cmp lr, #0
 	moveq lr, #4
 	mov ip, #64, #12
@@ -4178,7 +4196,7 @@ _00002D20: @ 0x00002D20
 	cmp ip, #0
 	beq . @ trap
 	bx ip
-	arm_func_end FUN_00002C8C
+	arm_func_end reset_vector
 
 	arm_func_start SVC_SoftReset
 SVC_SoftReset: @ 0x00002D4C
@@ -4228,16 +4246,19 @@ _00002DBC:
 	bx lr
 	arm_func_end FUN_00002D78
 
-	arm_func_start FUN_00002DC4
-FUN_00002DC4: @ 0x00002DC4
+	arm_func_start irq_vector
+irq_vector: @ 0x00002DC4
 	push {r0, r1, r2, r3, ip, lr}
-	mov r0, #64, #12
+	mov r0, #64, #12  @ 0x04000000
 	adr lr, _00002DD4
-	ldr pc, [r0, #-4]
+	ldr pc, [r0, #-4] @ 0x03FFFFFC
 _00002DD4:
 	pop {r0, r1, r2, r3, ip, lr}
 	subs pc, lr, #4
-_00002DDC:
+	arm_func_end irq_vector
+
+	arm_func_start swi_vector
+swi_vector:
 	push {fp, ip, lr}
 	ldrh ip, [lr, #-2]
 	and ip, ip, #0xff
@@ -4249,9 +4270,9 @@ _00002DDC:
 	orr fp, fp, #0x1f
 	msr cpsr_fsxc, fp
 	push {r2, lr}
-	adr lr, _00002E10
+	adr lr, _swi_return
 	bx ip
-_00002E10: @ 0x00002E10
+_swi_return: @ 0x00002E10
 	pop {r2, lr}
 	mov ip, #0xd3
 	msr cpsr_fsxc, ip
@@ -4300,7 +4321,7 @@ SVCTable:
 _00002EB8: .4byte FUN_00002EC4
 _00002EBC: .4byte FUN_000013B6+1
 _00002EC0: .4byte 0xFFFFFE00
-	arm_func_end FUN_00002DC4
+	arm_func_end swi_vector
 
 	arm_func_start FUN_00002EC4
 FUN_00002EC4: @ 0x00002EC4
@@ -4342,8 +4363,8 @@ SVC_IntrWait:
 _00002F24:
 	mov lr, #0x80
 	strb lr, [ip, #0x301]
-	mov r0, r0
-	mov r0, r0
+	nop
+	nop
 	bl FUN_00002F44
 	beq _00002F24
 	ldm sp!, {lr}
@@ -4392,8 +4413,8 @@ _00002F90:
 	bx lr
 	thumb_func_end SVC_SoundBias
 
-	non_word_aligned_thumb_func_start FUN_00002F92
-FUN_00002F92: @ 0x00002F92
+	non_word_aligned_thumb_func_start CopyData
+CopyData: @ 0x00002F92
 	@ Copy 4 bytes at a time from r0 to r1
 	@ Copy size is r2
 	@ If reading past FUN_00001204, jump into SoundBias (???) (bug: thumb flag set)
@@ -4411,7 +4432,7 @@ _00002F94:
 _00002FA4: .4byte 0x0380FC40
 _00002FA8: .4byte 0x04000504
 _00002FAC: .4byte FUN_00001204+1
-	thumb_func_end FUN_00002F92
+	thumb_func_end CopyData
 
 	arm_func_start SVC_Div
 SVC_Div: @ 0x00002FB0
@@ -4760,13 +4781,13 @@ __call_via_r5: @ 0x00003308
 	bx r5
 	thumb_func_end __call_via_r5
 
-	thumb_func_start __VENEER__000010D8
-__VENEER__000010D8: @ 0x0000330C
+	thumb_func_start __VENEER_BiosCall_FUN_00001F50
+__VENEER_BiosCall_FUN_00001F50: @ 0x0000330C
 	bx pc
 	nop
 	.arm
-	b _000010D8
-	thumb_func_end __VENEER__000010D8
+	b BiosCall_FUN_00001F50
+	thumb_func_end __VENEER_BiosCall_FUN_00001F50
 
 	thumb_func_start __VENEER_BiosCall_DecryptARM7SecureArea
 __VENEER_BiosCall_DecryptARM7SecureArea: @ 0x00003314
@@ -4808,13 +4829,13 @@ __VENEER_BiosCall_Encrypt_64bit_ExpandedArgs: @ 0x00003334
 	b BiosCall_Encrypt_64bit_ExpandedArgs
 	thumb_func_end __VENEER_BiosCall_Encrypt_64bit_ExpandedArgs
 
-	thumb_func_start __VENEER__000010E0
-__VENEER__000010E0: @ 0x0000333C
+	thumb_func_start __VENEER_BiosCall_InitKeycode_r3eq8
+__VENEER_BiosCall_InitKeycode_r3eq8: @ 0x0000333C
 	bx pc
 	nop
 	.arm
-	b _000010E0
-	thumb_func_end __VENEER__000010E0
+	b BiosCall_InitKeycode_r3eq8
+	thumb_func_end __VENEER_BiosCall_InitKeycode_r3eq8
 
 	thumb_func_start __VENEER_BiosCall_Decrypt_64bit
 __VENEER_BiosCall_Decrypt_64bit: @ 0x00003344
@@ -4824,13 +4845,13 @@ __VENEER_BiosCall_Decrypt_64bit: @ 0x00003344
 	b BiosCall_Decrypt_64bit
 	thumb_func_end __VENEER_BiosCall_Decrypt_64bit
 
-	thumb_func_start __VENEER_BiosCall_InitKeycode
-__VENEER_BiosCall_InitKeycode: @ 0x0000334C
+	thumb_func_start __VENEER_BiosCall_InitKeycode_r3eqC
+__VENEER_BiosCall_InitKeycode_r3eqC: @ 0x0000334C
 	bx pc
 	nop
 	.arm
-	b BiosCall_InitKeycode
-	thumb_func_end __VENEER_BiosCall_InitKeycode
+	b BiosCall_InitKeycode_r3eqC
+	thumb_func_end __VENEER_BiosCall_InitKeycode_r3eqC
 
 	thumb_func_start __VENEER_BiosCall_CopyData
 __VENEER_BiosCall_CopyData: @ 0x00003354
@@ -4872,13 +4893,13 @@ __VENEER_BiosCall_Encrypt_64bit_Plus4: @ 0x00003374
 	b BiosCall_Encrypt_64bit_Plus4
 	thumb_func_end __VENEER_BiosCall_Encrypt_64bit_Plus4
 
-	thumb_func_start __VENEER__00001100
-__VENEER__00001100: @ 0x0000337C
+	thumb_func_start __VENEER_BiosCall_FUN_00002036
+__VENEER_BiosCall_FUN_00002036: @ 0x0000337C
 	bx pc
 	nop
 	.arm
-	b _00001100
-	thumb_func_end __VENEER__00001100
+	b BiosCall_FUN_00002036
+	thumb_func_end __VENEER_BiosCall_FUN_00002036
 
 	thumb_func_start __VENEER_BiosCall_CpuFastSet
 __VENEER_BiosCall_CpuFastSet: @ 0x00003384
@@ -4888,13 +4909,13 @@ __VENEER_BiosCall_CpuFastSet: @ 0x00003384
 	b BiosCall_CpuFastSet
 	thumb_func_end __VENEER_BiosCall_CpuFastSet
 
-	thumb_func_start __VENEER__00001148
-__VENEER__00001148: @ 0x0000338C
+	thumb_func_start __VENEER_BiosCall_FUN_000028B4
+__VENEER_BiosCall_FUN_000028B4: @ 0x0000338C
 	bx pc
 	nop
 	.arm
-	b _00001148
-	thumb_func_end __VENEER__00001148
+	b BiosCall_FUN_000028B4
+	thumb_func_end __VENEER_BiosCall_FUN_000028B4
 
 	thumb_func_start __VENEER__000010B8
 __VENEER__000010B8: @ 0x00003394

@@ -32,7 +32,7 @@ bios7: ASFLAGS = -march=armv4t
 	$(AS) $(ASFLAGS) -o $@ $<
 
 %.elf: %.o %.ld
-	$(LD) -T $*.ld -o $@ $<
+	$(LD) -T $*.ld -Map $*.map -o $@ $<
 
 %.rom: %.elf
 	$(OBJCOPY) -O binary $< $@
